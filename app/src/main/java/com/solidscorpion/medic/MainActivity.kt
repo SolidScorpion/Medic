@@ -22,7 +22,6 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.webview.webViewClient = object : WebViewClientCompat() {
             override fun onPageFinished(view: WebView?, url: String?) {
-                binding.toolbar.title = url
                 super.onPageFinished(view, url)
             }
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
@@ -41,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
+            title = ""
             setHomeAsUpIndicator(ResourcesCompat.getDrawable(resources, R.drawable.ic_menu_black_24dp, theme))
         }
         binding.drawer.addDrawerListener(
@@ -77,7 +77,6 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (binding.webview.canGoBack()) {
             binding.webview.goBack()
-        }
-        super.onBackPressed()
+        } else super.onBackPressed()
     }
 }

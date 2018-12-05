@@ -1,41 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
-    <androidx.drawerlayout.widget.DrawerLayout android:layout_width="match_parent"
-                                               android:id="@+id/drawer"
-                                               android:fitsSystemWindows="true"
-                                               android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout android:layout_width="match_parent"
-                                                             android:layout_height="match_parent">
-            <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent"
-                                                             android:layout_height="wrap_content">
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-                                                   android:id="@+id/toolbar"
-                                                   android:layout_width="match_parent"
-                                                   android:background="?attr/colorPrimary"
-                                                   app:titleTextColor="@color/main_color"
-                                                   app:layout_scrollFlags="scroll|enterAlways|snap"
-                                                   android:layout_height="?attr/actionBarSize">
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:layout_scrollFlags="scroll|enterAlways|snap"
+                    app:titleTextColor="@color/main_color">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="@dimen/base_dimen"
+                        android:layout_marginStart="@dimen/base_dimen">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end|center_vertical"
+                            app:srcCompat="@drawable/medic_logo" />
+                    </FrameLayout>
 
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
 
 
             <com.solidscorpion.medic.NestedWebView
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                    android:id="@+id/webview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                android:id="@+id/webview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
-        <FrameLayout android:layout_width="match_parent"
-                     android:id="@+id/drawerContainer"
-                     android:layout_height="match_parent"
-                     android:layout_gravity="start"
-                     android:background="@color/main_color"
-        />
+
+        <FrameLayout
+            android:id="@+id/drawerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@color/main_color" />
     </androidx.drawerlayout.widget.DrawerLayout>
 
 </layout>
