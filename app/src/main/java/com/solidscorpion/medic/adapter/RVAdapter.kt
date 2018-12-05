@@ -10,43 +10,30 @@ import com.solidscorpion.medic.R
 import com.solidscorpion.medic.pojo.ModelMenuItem
 
 
-class RVAdapter
-internal constructor(context: Context, private val mData: ArrayList<ModelMenuItem>?) : RecyclerView.Adapter<RVAdapter.ViewHolder>() {
+class RVAdapter(context: Context, val data: List<ModelMenuItem>, val onClick: (ModelMenuItem) -> Unit) :
+    RecyclerView.Adapter<RVAdapter.ViewHolder>() {
 
     private val mInflater: LayoutInflater = LayoutInflater.from(context)
-    private var mClickListener: ItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = mInflater.inflate(R.layout.item, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(view).also {
+            it.myTextView.setOnClickListener { _ ->
+                data[it.adapterPosition]
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val model = mData!![position]
+        val model = data[position]
         holder.myTextView.text = model.title
     }
 
-    override fun getItemCount(): Int {
-        return mData!!.size
+    override fun getItemCount() = data.size
+
+
+    inner class ViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val myTextView: TextView = itemView.findViewById(R.id.tvTitle)
     }
 
-    inner class ViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        internal var myTextView: TextView = itemView.findViewById(R.id.tvTitle)
-
-        init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            if (mClickListener != null) mClickListener!!.onItemClick(mData!![adapterPosition])
-        }
-    }
-
-    internal fun setClickListener(itemClickListener: ItemClickListener) {
-        this.mClickListener = itemClickListener
-    }
-
-    interface ItemClickListener {
-        fun onItemClick(modelMenuItem: ModelMenuItem)
-    }
 }

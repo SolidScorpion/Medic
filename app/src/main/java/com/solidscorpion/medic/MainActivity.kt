@@ -19,8 +19,19 @@ import com.solidscorpion.medic.databinding.ActivityMainBinding
 import com.solidscorpion.medic.pojo.ModelMenuItem
 import kotlinx.android.synthetic.main.activity_main.view.*
 
-class MainActivity : AppCompatActivity(), RVAdapter.ItemClickListener, MainActivityContract.View {
-
+class MainActivity : AppCompatActivity(), MainActivityContract.View {
+    override fun onMenuItemsLoaded(items: List<ModelMenuItem>) {
+        val adapter = RVAdapter(this, items) {
+            binding.webview.loadUrl(
+                StringBuilder()
+                    .append("https://dev.medic.co.il")
+                    .append(it.link)
+                    .append("?app")
+                    .toString())
+            binding.drawer.closeDrawer(GravityCompat.START)
+        }
+        binding.drawerContainer.menu.adapter = adapter
+    }
 
 
     private lateinit var binding: ActivityMainBinding
@@ -29,11 +40,9 @@ class MainActivity : AppCompatActivity(), RVAdapter.ItemClickListener, MainActiv
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        presenter = MainActivityPresenter(this)
+        val api = (application as MedicApplication).api
+        presenter = MainActivityPresenter(this, api)
         binding.webview.webViewClient = object : WebViewClientCompat() {
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-            }
 
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 if (!request.hasGesture()) return false
@@ -76,22 +85,6 @@ class MainActivity : AppCompatActivity(), RVAdapter.ItemClickListener, MainActiv
 
         binding.drawerContainer.menu.layoutManager = LinearLayoutManager(this)
         presenter.loadMenuItems()
-    }
-
-    override fun onMenuItemsLoaded(items: MutableList<ModelMenuItem>?) {
-        val adapter = RVAdapter(this, items as ArrayList<ModelMenuItem>?)
-        adapter.setClickListener(this)
-        binding.drawerContainer.menu.adapter = adapter
-    }
-
-    override fun onItemClick(modelMenuItem: ModelMenuItem) {
-        binding.webview.loadUrl(
-                StringBuilder()
-                        .append("https://dev.medic.co.il")
-                        .append(modelMenuItem.link)
-                        .append("?app")
-                        .toString())
-        binding.drawer.closeDrawer(GravityCompat.START)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
