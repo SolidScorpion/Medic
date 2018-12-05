@@ -3,26 +3,24 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.drawerlayout.widget.DrawerLayout android:layout_width="match_parent"
                                                android:id="@+id/drawer"
+                                               android:fitsSystemWindows="true"
                                                android:layout_height="match_parent">
 
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout android:layout_width="match_parent"
                                                              android:layout_height="match_parent">
-
             <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent"
                                                              android:layout_height="wrap_content">
-                <com.google.android.material.appbar.CollapsingToolbarLayout android:layout_width="match_parent"
-                                                                            android:fitsSystemWindows="true"
-                                                                            android:id="@+id/collapsingToolbar"
-                                                                            app:expandedTitleTextAppearance="@style/CollapsingToolbarStyle"
-                                                                            app:collapsedTitleTextAppearance="@style/CollapsedStyle"
-                                                                            app:contentScrim="?attr/colorPrimary"
-                                                                            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                                                                            android:layout_height="100dp">
-                    <include layout="@layout/toolbar" android:id="@+id/toolbar"
-                             app:layout_collapseMode="pin"
-                    />
-                </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+                <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   android:id="@+id/toolbar"
+                                                   android:layout_width="match_parent"
+                                                   android:background="?attr/colorPrimary"
+                                                   app:titleTextColor="@color/main_color"
+                                                   app:layout_scrollFlags="scroll|enterAlways|snap"
+                                                   android:layout_height="?attr/actionBarSize">
+
+                </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
 
 

@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.webview.webViewClient = object : WebViewClientCompat() {
             override fun onPageFinished(view: WebView?, url: String?) {
-                binding.toolbar.toolbar.title = url
+                binding.toolbar.title = url
                 super.onPageFinished(view, url)
             }
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         val settings = binding.webview.settings
         settings.javaScriptEnabled = true
         binding.webview.loadUrl("https://dev.medic.co.il/?app")
-        setSupportActionBar(binding.toolbar.toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(ResourcesCompat.getDrawable(resources, R.drawable.ic_menu_black_24dp, theme))
