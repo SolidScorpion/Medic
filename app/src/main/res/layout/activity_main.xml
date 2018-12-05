@@ -42,7 +42,7 @@
             </com.google.android.material.appbar.AppBarLayout>
 
 
-            <com.solidscorpion.medic.NestedWebView
+            <com.solidscorpion.medic.view.NestedWebView
                 android:id="@+id/webview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -54,7 +54,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@color/main_color" />
+            android:background="@color/main_color" >
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/menu"
+                android:layout_width="match_parent"
+                android:layout_height="400dp">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+        </FrameLayout>
     </androidx.drawerlayout.widget.DrawerLayout>
 
 </layout>
