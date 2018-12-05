@@ -1,0 +1,30 @@
+[
+  {
+    "title": "Home",
+    "link": "/"
+  },
+  {
+    "title": "A-B index",
+    "link": "/a-b-index/"
+  },
+  {
+    "title": "Pharmacological Index",
+    "link": "/pharmacological-index/"
+  },
+  {
+    "title": "Drug Classes",
+    "link": "/drug-classes/"
+  },
+  {
+    "title": "Active Ingredients",
+    "link": "/active-ingredient-index/"
+  },
+  {
+    "title": "Companies",
+    "link": "/companies-index/"
+  },
+  {
+    "title": "News",
+    "link": "/news-index/"
+  }
+]

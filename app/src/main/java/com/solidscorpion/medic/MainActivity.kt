@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         }
         val settings = binding.webview.settings
         settings.javaScriptEnabled = true
-        binding.webview.loadUrl("https://dev.medic.co.il/")
+        binding.webview.loadUrl("https://dev.medic.co.il/?app")
     }
 
     override fun onBackPressed() {
