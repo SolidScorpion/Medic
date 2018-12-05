@@ -19,7 +19,7 @@ class RVAdapter(context: Context, val data: List<ModelMenuItem>, val onClick: (M
         val view = mInflater.inflate(R.layout.item, parent, false)
         return ViewHolder(view).also {
             it.myTextView.setOnClickListener { _ ->
-                data[it.adapterPosition]
+                onClick(data[it.adapterPosition])
             }
         }
     }
