@@ -9,5 +9,16 @@
         <item name="android:statusBarColor">@color/white</item>
     </style>
     <style name="AppTheme" parent="BaseTheme"/>
+    <style name="ToolbarStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="textColor">@color/main_color</item>
+    </style>
+    <style name="CollapsingToolbarStyle" parent="TextAppearance.Design.CollapsingToolbar.Expanded">
+        <item name="android:textColor">@color/main_color</item>
+    </style>
+    <style name="CollapsedStyle" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/main_color</item>
+        <item name="android:textSize">16sp</item>
+
+    </style>
 
 </resources>
