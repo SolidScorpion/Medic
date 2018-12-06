@@ -1,6 +1,8 @@
 package com.solidscorpion.medic
 
 import android.app.Application
+import com.google.firebase.messaging.FirebaseMessaging
+import com.pushwoosh.Pushwoosh
 import com.solidscorpion.medic.api.Api
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -11,6 +13,13 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 class MedicApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+        Pushwoosh.getInstance().registerForPushNotifications()
+        FirebaseMessaging.getInstance().isAutoInitEnabled = true
+    }
+
     val api: Api by lazy {
         val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
             override fun checkClientTrusted(chain: Array<java.security.cert.X509Certificate>, authType: String) {}

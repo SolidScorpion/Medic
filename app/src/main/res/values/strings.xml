@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Medic</string>
     <string name="search_israel_drug_index">Search Israel drug Index</string>
+    <string name="fcm_sender_id">1093432682131</string>
 </resources>
