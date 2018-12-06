@@ -16,24 +16,35 @@ class RVAdapter(context: Context, val data: List<ModelMenuItem>, val onClick: (M
     private val mInflater: LayoutInflater = LayoutInflater.from(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = mInflater.inflate(R.layout.item, parent, false)
+        val view = mInflater.inflate(viewType, parent, false)
         return ViewHolder(view).also {
-            it.myTextView.setOnClickListener { _ ->
-                onClick(data[it.adapterPosition])
+            it.myTextView?.setOnClickListener { _ ->
+                val modelMenuItem = data[it.adapterPosition]
+                if (modelMenuItem.title.length != 1) {
+                    onClick(modelMenuItem)
+                }
             }
         }
     }
 
+    override fun getItemViewType(position: Int): Int {
+        if (data[position].title.length == 1) {
+            return R.layout.separator
+        }
+        return R.layout.item
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model = data[position]
-        holder.myTextView.text = model.title
+        if (getItemViewType(position) == R.layout.item) {
+            holder.myTextView?.text = model.title
+        }
     }
 
     override fun getItemCount() = data.size
 
-
     inner class ViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val myTextView: TextView = itemView.findViewById(R.id.tvTitle)
+        val myTextView: TextView? = itemView.findViewById(R.id.tvTitle)
     }
 
 }

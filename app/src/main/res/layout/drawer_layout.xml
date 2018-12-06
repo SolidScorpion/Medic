@@ -45,21 +45,12 @@
                                                                      app:layout_constraintTop_toBottomOf="@+id/imageView"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <View android:layout_width="match_parent" android:layout_height="2dp"
-              android:layout_marginTop="@dimen/base_dimen"
-              android:layout_marginStart="@dimen/base_dimen"
-              android:layout_marginEnd="@dimen/base_dimen" android:background="@color/white"/>
-
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/menu"
                 android:layout_width="match_parent"
-                android:layout_height="300dp">
-
-        </androidx.recyclerview.widget.RecyclerView>
-        <View android:layout_width="match_parent" android:layout_height="2dp"
-              android:layout_marginTop="@dimen/base_dimen"
-              android:layout_marginStart="@dimen/base_dimen"
-              android:layout_marginEnd="@dimen/base_dimen" android:background="@color/white"/>
+                android:layout_marginStart="@dimen/base_dimen"
+                android:layout_marginEnd="@dimen/base_dimen"
+                android:layout_height="match_parent"/>
 
     </LinearLayout>
 </layout>

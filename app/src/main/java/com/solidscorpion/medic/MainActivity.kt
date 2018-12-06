@@ -20,13 +20,16 @@ import com.solidscorpion.medic.pojo.ModelMenuItem
 class MainActivity : AppCompatActivity(), MainActivityContract.View {
     override fun onMenuItemsLoaded(items: List<ModelMenuItem>) {
         val adapter = RVAdapter(this, items) {
-            binding.webview.loadUrl(
-                StringBuilder()
-                    .append("https://dev.medic.co.il")
-                    .append(it.link)
-                    .append("?app")
-                    .toString())
-           slideUp(binding.drawerLayout.drawerContainer)
+            if (it.link.length > 1 || it.link == "/") {
+                binding.webview.loadUrl(
+                    StringBuilder()
+                        .append("https://dev.medic.co.il")
+                        .append(it.link)
+                        .append("?app")
+                        .toString()
+                )
+                slideUp(binding.drawerLayout.drawerContainer)
+            }
         }
         binding.drawerLayout.menu.adapter = adapter
     }
