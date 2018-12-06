@@ -1,69 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.drawerlayout.widget.DrawerLayout
-        android:id="@+id/drawer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-
+    <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
             <com.google.android.material.appbar.AppBarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
                 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:layout_scrollFlags="scroll|enterAlways|snap"
-                    app:titleTextColor="@color/main_color">
+                                                   android:id="@+id/toolbar"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="?attr/actionBarSize"
+                                                   android:background="?attr/colorPrimary"
+                                                   app:layout_scrollFlags="scroll|enterAlways|snap"
+                                                   app:titleTextColor="@color/main_color">
 
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="@dimen/base_dimen"
-                        android:layout_marginStart="@dimen/base_dimen">
-
-                        <ImageView
+                    <ImageView
+                            android:layout_marginEnd="@dimen/base_dimen"
+                            android:layout_marginStart="@dimen/base_dimen"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end|center_vertical"
-                            app:srcCompat="@drawable/medic_logo" />
-                    </FrameLayout>
-
+                            android:src="@drawable/medic_logo"/>
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
 
-
             <com.solidscorpion.medic.view.NestedWebView
-                android:id="@+id/webview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                    android:id="@+id/webview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <include layout="@layout/drawer_layout" android:id="@+id/drawerLayout"/>
+    </FrameLayout>
 
-        <FrameLayout
-            android:id="@+id/drawerContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:background="@color/main_color" >
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/menu"
-                android:layout_width="match_parent"
-                android:layout_height="400dp">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-        </FrameLayout>
-    </androidx.drawerlayout.widget.DrawerLayout>
 
 </layout>
