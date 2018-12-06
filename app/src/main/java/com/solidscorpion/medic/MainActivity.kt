@@ -18,22 +18,6 @@ import com.solidscorpion.medic.pojo.ModelMenuItem
 
 
 class MainActivity : AppCompatActivity(), MainActivityContract.View {
-    override fun onMenuItemsLoaded(items: List<ModelMenuItem>) {
-        val adapter = RVAdapter(this, items) {
-            if (it.link.length > 1 || it.link == "/") {
-                binding.webview.loadUrl(
-                    StringBuilder()
-                        .append("https://dev.medic.co.il")
-                        .append(it.link)
-                        .append("?app")
-                        .toString()
-                )
-                slideUp(binding.drawerLayout.drawerContainer)
-            }
-        }
-        binding.drawerLayout.menu.adapter = adapter
-    }
-
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var presenter: MainActivityContract.Presenter
@@ -64,17 +48,26 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
             title = ""
             setHomeAsUpIndicator(ResourcesCompat.getDrawable(resources, R.drawable.ic_menu_black_24dp, theme))
         }
+
         binding.drawerLayout.closeDrawer.setOnClickListener { slideUp(binding.drawerLayout.drawerContainer) }
         binding.drawerLayout.menu.layoutManager = LinearLayoutManager(this)
         presenter.loadMenuItems()
     }
 
-    private fun slideUp(view: View) {
-        view.animate().translationY(-view.height.toFloat()).setDuration(500).start()
-    }
-
-    private fun slideDown(view: View) {
-        view.animate().translationY(0f).setDuration(500).start()
+    override fun onMenuItemsLoaded(items: List<ModelMenuItem>) {
+        val adapter = RVAdapter(this, items) {
+            if (it.link.length > 1 || it.link == "/") {
+                binding.webview.loadUrl(
+                    StringBuilder()
+                        .append("https://dev.medic.co.il")
+                        .append(it.link)
+                        .append("?app")
+                        .toString()
+                )
+                slideUp(binding.drawerLayout.drawerContainer)
+            }
+        }
+        binding.drawerLayout.menu.adapter = adapter
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -92,4 +85,13 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
             binding.webview.goBack()
         } else super.onBackPressed()
     }
+
+    private fun slideUp(view: View) {
+        view.animate().translationY(-view.height.toFloat()).setDuration(500).start()
+    }
+
+    private fun slideDown(view: View) {
+        view.animate().translationY(0f).setDuration(500).start()
+    }
+
 }
