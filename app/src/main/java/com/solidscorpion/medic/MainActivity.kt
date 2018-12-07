@@ -1,5 +1,6 @@
 package com.solidscorpion.medic
 
+import android.content.Intent
 import android.net.http.SslError
 import android.os.Bundle
 import android.view.MenuItem
@@ -15,6 +16,7 @@ import androidx.webkit.WebViewClientCompat
 import com.solidscorpion.medic.adapter.RVAdapter
 import com.solidscorpion.medic.databinding.ActivityMainBinding
 import com.solidscorpion.medic.pojo.ModelMenuItem
+import kotlinx.android.synthetic.main.activity_main.view.*
 
 
 class MainActivity : AppCompatActivity(), MainActivityContract.View {
@@ -39,6 +41,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
                 super.onReceivedSslError(view, handler, error)
             }
         }
+        binding.toolbar.btnShare.setOnClickListener { onShareClicked(binding.webview.url) }
         val settings = binding.webview.settings
         settings.javaScriptEnabled = true
         binding.webview.loadUrl("https://dev.medic.co.il/?app")
@@ -52,6 +55,15 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         binding.drawerLayout.closeDrawer.setOnClickListener { slideUp(binding.drawerLayout.drawerContainer) }
         binding.drawerLayout.menu.layoutManager = LinearLayoutManager(this)
         presenter.loadMenuItems()
+    }
+
+    private fun onShareClicked(url: String) {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, url.substring(0, url.length - 5))
+            type = "text/plain"
+        }
+        startActivity(sendIntent)
     }
 
     override fun onMenuItemsLoaded(items: List<ModelMenuItem>) {

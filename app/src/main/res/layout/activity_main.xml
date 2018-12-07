@@ -13,13 +13,22 @@
                     android:layout_height="wrap_content">
 
                 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   android:gravity="center_vertical|start"
                                                    android:id="@+id/toolbar"
                                                    android:layout_width="match_parent"
                                                    android:layout_height="?attr/actionBarSize"
                                                    android:background="?attr/colorPrimary"
                                                    app:layout_scrollFlags="scroll|enterAlways|snap"
                                                    app:titleTextColor="@color/main_color">
-
+                    <ImageView
+                            android:id="@+id/btnShare"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_gravity="start|center_vertical"
+                            android:src="@mipmap/ic_share"/>
                     <ImageView
                             android:layout_marginEnd="@dimen/base_dimen"
                             android:layout_marginStart="@dimen/base_dimen"

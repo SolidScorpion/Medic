@@ -10,7 +10,7 @@
     <application
         android:name=".MedicApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -19,7 +19,7 @@
         <meta-data android:name="com.pushwoosh.senderid" android:value="@string/fcm_sender_id" />
         <meta-data
             android:name="com.pushwoosh.notification_icon"
-            android:value="@mipmap/ic_launcher" />
+            android:value="@mipmap/ic_launcher_round" />
         <meta-data
             android:name="com.pushwoosh.notification_icon_color"
             android:value="@color/main_color" />
