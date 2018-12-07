@@ -44,7 +44,11 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
 
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 if (!request.hasGesture()) return false
-                return super.shouldOverrideUrlLoading(view, request)
+                binding.webview.loadUrl(StringBuilder()
+                    .append(request.url)
+                    .append("?app")
+                    .toString())
+                return true
             }
 
             override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
