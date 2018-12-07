@@ -1,6 +1,7 @@
 package com.solidscorpion.medic
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.http.SslError
 import android.os.Bundle
 import android.view.MenuItem
@@ -30,6 +31,16 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         val api = (application as MedicApplication).api
         presenter = MainActivityPresenter(this, api)
         binding.webview.webViewClient = object : WebViewClientCompat() {
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                binding.pbLoading.visibility = View.VISIBLE
+                super.onPageStarted(view, url, favicon)
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                binding.pbLoading.visibility = View.GONE
+                super.onPageFinished(view, url)
+            }
 
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 if (!request.hasGesture()) return false
