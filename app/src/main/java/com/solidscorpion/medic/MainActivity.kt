@@ -32,8 +32,14 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         presenter = MainActivityPresenter(this, api)
         binding.webview.webViewClient = object : WebViewClientCompat() {
 
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+            override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
                 binding.pbLoading.visibility = View.VISIBLE
+                if (url != "https://dev.medic.co.il/?app") {
+                    binding.toolbar.btnShare.visibility = View.VISIBLE
+                }
+                else {
+                    binding.toolbar.btnShare.visibility = View.GONE
+                }
                 super.onPageStarted(view, url, favicon)
             }
 
