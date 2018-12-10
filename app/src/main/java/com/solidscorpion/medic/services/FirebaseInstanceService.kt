@@ -1,4 +1,4 @@
-package com.solidscorpion.medic
+package com.solidscorpion.medic.services
 
 import android.util.Log
 
