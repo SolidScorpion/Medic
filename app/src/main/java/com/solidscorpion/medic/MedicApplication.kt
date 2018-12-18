@@ -1,6 +1,8 @@
 package com.solidscorpion.medic
 
 import android.app.Application
+import com.facebook.stetho.Stetho
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.firebase.messaging.FirebaseMessaging
 import com.pushwoosh.Pushwoosh
 import com.solidscorpion.medic.api.Api
@@ -18,6 +20,9 @@ class MedicApplication : Application() {
         super.onCreate()
         Pushwoosh.getInstance().registerForPushNotifications()
         FirebaseMessaging.getInstance().isAutoInitEnabled = true
+        if (BuildConfig.DEBUG) {
+            Stetho.initializeWithDefaults(this)
+        }
     }
 
     val api: Api by lazy {
@@ -32,6 +37,7 @@ class MedicApplication : Application() {
         val builder = OkHttpClient.Builder()
         builder.sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
         builder.hostnameVerifier { _, _ -> true }
+        builder.addInterceptor(StethoInterceptor())
         val build = Retrofit.Builder()
             .baseUrl("https://dev.medic.co.il/")
             .client(builder.build())

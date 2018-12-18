@@ -1,6 +1,7 @@
 package com.solidscorpion.medic
 
 import android.annotation.SuppressLint
+import android.util.Log
 import com.solidscorpion.medic.api.Api
 import com.solidscorpion.medic.pojo.ModelMenuItem
 import io.reactivex.Single
@@ -8,9 +9,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 
-class MainActivityPresenter(private val view: MainActivityContract.View, private val api: Api) :
+class MainActivityPresenter(
+    private val view: MainActivityContract.View,
+    private val api: Api
+) :
     MainActivityContract.Presenter {
-
+    private val TAG = MainActivityPresenter::class.java.simpleName
     @SuppressLint("CheckResult")
     override fun loadMenuItems() {
         Single.zip(api.getMenuItems().subscribeOn(Schedulers.io()), api.getFooterMenuItems().subscribeOn(Schedulers.io()),
@@ -28,4 +32,18 @@ class MainActivityPresenter(private val view: MainActivityContract.View, private
             .subscribe { items -> view.onMenuItemsLoaded(items) }
     }
 
+    override fun performSearch(text: CharSequence) {
+        api.performSearch(text.toString())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                it.data.forEach {
+                    Log.d(TAG, it.toString())
+                }
+            }, {
+                Log.e(TAG, it.message)
+                it.printStackTrace()
+            })
+
+    }
 }

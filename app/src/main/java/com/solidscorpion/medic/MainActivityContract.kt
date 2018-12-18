@@ -10,5 +10,6 @@ interface MainActivityContract {
 
     interface Presenter {
         fun loadMenuItems()
+        fun performSearch(text: CharSequence)
     }
 }

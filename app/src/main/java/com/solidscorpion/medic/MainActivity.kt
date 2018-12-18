@@ -4,8 +4,10 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.http.SslError
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.webkit.SslErrorHandler
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -28,8 +30,8 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        val api = (application as MedicApplication).api
-        presenter = MainActivityPresenter(this, api)
+        val application = (application as MedicApplication)
+        presenter = MainActivityPresenter(this, application.api)
         binding.webview.webViewClient = object : WebViewClientCompat() {
 
             override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
@@ -61,6 +63,13 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
                 handler?.proceed()
                 super.onReceivedSslError(view, handler, error)
             }
+        }
+        binding.drawerLayout.search.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(v.text)) {
+                presenter.performSearch(v.text)
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
         }
         binding.toolbar.btnShare.setOnClickListener { onShareClicked(binding.webview.url) }
         val settings = binding.webview.settings
