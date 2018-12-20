@@ -37,7 +37,7 @@ class MainActivityPresenter(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                it.data.forEach {
+                it.searchResults.forEach {
                     Log.d(TAG, it.toString())
                 }
             }, {
