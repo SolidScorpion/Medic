@@ -4,7 +4,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.http.SslError
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -81,7 +83,18 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
             title = ""
             setHomeAsUpIndicator(ResourcesCompat.getDrawable(resources, R.drawable.ic_menu_black_24dp, theme))
         }
+        binding.drawerLayout.search.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
 
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val text = s?.toString() ?: ""
+                presenter.performSearch(text)
+            }
+        })
         binding.drawerLayout.closeDrawer.setOnClickListener { slideUp(binding.drawerLayout.drawerContainer) }
         binding.drawerLayout.menu.layoutManager = LinearLayoutManager(this)
         presenter.loadMenuItems()
@@ -94,6 +107,11 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
             type = "text/plain"
         }
         startActivity(sendIntent)
+    }
+
+    override fun onStop() {
+        presenter.onStop()
+        super.onStop()
     }
 
     override fun onMenuItemsLoaded(items: List<ModelMenuItem>) {
