@@ -39,7 +39,7 @@ class MedicApplication : Application() {
         val builder = OkHttpClient.Builder()
         builder.sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
         builder.hostnameVerifier { _, _ -> true }
-        builder.addInterceptor(StethoInterceptor())
+        builder.addNetworkInterceptor(StethoInterceptor())
         val build = Retrofit.Builder()
             .baseUrl("https://dev.medic.co.il/")
             .client(builder.build())
