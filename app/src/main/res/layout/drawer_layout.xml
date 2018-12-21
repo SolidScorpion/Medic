@@ -47,7 +47,6 @@
                     android:layout_marginTop="8dp"
                     android:maxLines="1"
                     android:background="@drawable/oval_background"
-                    android:drawableEnd="@drawable/tinted_drawable"
                     android:hint="@string/search_israel_drug_index"
                     android:paddingEnd="16dp"
                     android:paddingStart="16dp"
@@ -58,6 +57,13 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageView"/>
+            <ImageView android:layout_height="0dp"
+                       android:id="@+id/searchIcon"
+                       android:src="@drawable/tinted_drawable"
+                       app:layout_constraintEnd_toEndOf="@+id/search"
+                       app:layout_constraintTop_toTopOf="@+id/search"
+                       app:layout_constraintBottom_toBottomOf="@+id/search"
+                       android:layout_width="wrap_content" android:layout_marginEnd="8dp"/>
             <ProgressBar android:layout_width="0dp"
                          android:layout_height="0dp"
                          android:visibility="gone"

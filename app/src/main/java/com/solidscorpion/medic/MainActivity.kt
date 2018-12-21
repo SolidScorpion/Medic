@@ -98,6 +98,12 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         binding.drawerLayout.closeDrawer.setOnClickListener { slideUp(binding.drawerLayout.drawerContainer) }
         binding.drawerLayout.menu.layoutManager = LinearLayoutManager(this)
         presenter.loadMenuItems()
+        binding.drawerLayout.searchIcon.setOnClickListener { loadEmptySearch() }
+    }
+
+    private fun loadEmptySearch() {
+        binding.webview.loadUrl("https://dev.medic.co.il/medic-search/?app")
+        slideUp(binding.drawerLayout.drawerContainer)
     }
 
     override fun showProgress() {
