@@ -100,6 +100,16 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         presenter.loadMenuItems()
     }
 
+    override fun showProgress() {
+        binding.drawerLayout.searchProgress.show()
+        binding.drawerLayout.search.isEnabled = false
+    }
+
+    override fun hideProgress() {
+        binding.drawerLayout.searchProgress.hide()
+        binding.drawerLayout.search.isEnabled = true
+    }
+
     private fun onShareClicked(url: String) {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND

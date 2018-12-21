@@ -6,6 +6,8 @@ interface MainActivityContract {
 
     interface View {
         fun onMenuItemsLoaded(items: List<ModelMenuItem>)
+        fun showProgress()
+        fun hideProgress()
     }
 
     interface Presenter {

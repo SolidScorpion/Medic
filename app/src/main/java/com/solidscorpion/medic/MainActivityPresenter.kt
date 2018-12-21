@@ -44,14 +44,17 @@ class MainActivityPresenter(
         disposables.clear()
         disposables.add(
             Single.timer(1, TimeUnit.SECONDS)
-                .flatMap { api.performSearch(text.toString()) }
-                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { view.showProgress() }
+                .flatMap { api.performSearch(text.toString()).subscribeOn(Schedulers.io()) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     it.searchResults.forEach {
                         Log.d(TAG, it.toString())
                     }
+                    view.hideProgress()
                 }, {
+                    view.hideProgress()
                     Log.e(TAG, it.message)
                     it.printStackTrace()
                 })

@@ -57,6 +57,15 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageView"/>
+            <androidx.core.widget.ContentLoadingProgressBar android:layout_width="0dp"
+                                                            android:layout_height="0dp"
+                                                            android:visibility="gone"
+                                                            android:id="@+id/searchProgress"
+                                                            app:layout_constraintEnd_toEndOf="parent"
+                                                            app:layout_constraintStart_toStartOf="parent"
+                                                            app:layout_constraintTop_toTopOf="@id/search"
+                                                            app:layout_constraintBottom_toBottomOf="@id/search"
+            />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
