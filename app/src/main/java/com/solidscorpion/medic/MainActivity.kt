@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
     }
 
     private fun loadEmptySearch() {
-        binding.webview.loadUrl("https://dev.medic.co.il/medic-search/${binding.drawerLayout.search.text}")
+        binding.webview.loadUrl("https://dev.medic.co.il/medic-search/${binding.drawerLayout.search.text}".plus("/?app"))
         slideUp(binding.drawerLayout.drawerContainer)
     }
 
