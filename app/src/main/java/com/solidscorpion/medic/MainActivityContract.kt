@@ -1,5 +1,6 @@
 package com.solidscorpion.medic
 
+import com.solidscorpion.medic.pojo.BaseItem
 import com.solidscorpion.medic.pojo.ModelMenuItem
 
 interface MainActivityContract {
@@ -8,6 +9,7 @@ interface MainActivityContract {
         fun onMenuItemsLoaded(items: List<ModelMenuItem>)
         fun showProgress()
         fun hideProgress()
+        fun showResults(results: List<BaseItem>)
     }
 
     interface Presenter {

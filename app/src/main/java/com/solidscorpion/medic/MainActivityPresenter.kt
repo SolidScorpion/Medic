@@ -3,7 +3,9 @@ package com.solidscorpion.medic
 import android.annotation.SuppressLint
 import android.util.Log
 import com.solidscorpion.medic.api.Api
+import com.solidscorpion.medic.pojo.BaseItem
 import com.solidscorpion.medic.pojo.ModelMenuItem
+import com.solidscorpion.medic.pojo.SearchResultItem
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -49,9 +51,8 @@ class MainActivityPresenter(
                 .flatMap { api.performSearch(text.toString()).subscribeOn(Schedulers.io()) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    it.searchResults.forEach {
-                        Log.d(TAG, it.toString())
-                    }
+                    val results = parseResults(it.searchResults)
+                    view.showResults(results)
                     view.hideProgress()
                 }, {
                     view.hideProgress()
@@ -59,5 +60,16 @@ class MainActivityPresenter(
                     it.printStackTrace()
                 })
         )
+    }
+
+    private fun parseResults(searchResults: MutableList<Map<String, SearchResultItem>>): List<BaseItem> {
+        val parsedResult = ArrayList<BaseItem>()
+        for (result in searchResults) {
+            result.forEach { (s: String, searchResultItem: SearchResultItem) ->
+                parsedResult.add(BaseItem(searchResultItem.displayName, "", 0))
+                parsedResult.addAll(searchResultItem.items)
+            }
+        }
+        return parsedResult
     }
 }

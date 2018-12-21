@@ -18,10 +18,13 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.webkit.WebViewClientCompat
+import com.solidscorpion.medic.adapter.CustomArrayAdapter
 import com.solidscorpion.medic.adapter.RVAdapter
 import com.solidscorpion.medic.databinding.ActivityMainBinding
+import com.solidscorpion.medic.pojo.BaseItem
 import com.solidscorpion.medic.pojo.ModelMenuItem
 import kotlinx.android.synthetic.main.activity_main.view.*
+import kotlinx.android.synthetic.main.drawer_layout.*
 
 
 class MainActivity : AppCompatActivity(), MainActivityContract.View {
@@ -99,6 +102,13 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         binding.drawerLayout.menu.layoutManager = LinearLayoutManager(this)
         presenter.loadMenuItems()
         binding.drawerLayout.searchIcon.setOnClickListener { loadEmptySearch() }
+
+    }
+
+    override fun showResults(results: List<BaseItem>) {
+        val adapter = CustomArrayAdapter(this, R.layout.autocomplete_item, results)
+        spinner.adapter = adapter
+        spinner.performClick()
     }
 
     private fun loadEmptySearch() {
