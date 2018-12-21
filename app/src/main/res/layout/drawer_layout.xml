@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+>
 
     <LinearLayout
             android:orientation="vertical"
@@ -57,14 +58,16 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageView"/>
-            <androidx.core.widget.ContentLoadingProgressBar android:layout_width="0dp"
-                                                            android:layout_height="0dp"
-                                                            android:visibility="gone"
-                                                            android:id="@+id/searchProgress"
-                                                            app:layout_constraintEnd_toEndOf="parent"
-                                                            app:layout_constraintStart_toStartOf="parent"
-                                                            app:layout_constraintTop_toTopOf="@id/search"
-                                                            app:layout_constraintBottom_toBottomOf="@id/search"
+            <ProgressBar android:layout_width="0dp"
+                         android:layout_height="0dp"
+                         android:visibility="gone"
+                         tools:visibility="visible"
+                         android:id="@+id/searchProgress"
+                         android:theme="@style/AppTheme.Progress"
+                         app:layout_constraintEnd_toEndOf="parent"
+                         app:layout_constraintStart_toStartOf="parent"
+                         app:layout_constraintTop_toTopOf="@id/search"
+                         app:layout_constraintBottom_toBottomOf="@id/search"
             />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

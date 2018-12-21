@@ -101,12 +101,12 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
     }
 
     override fun showProgress() {
-        binding.drawerLayout.searchProgress.show()
+        binding.drawerLayout.searchProgress.visibility = View.VISIBLE
         binding.drawerLayout.search.isEnabled = false
     }
 
     override fun hideProgress() {
-        binding.drawerLayout.searchProgress.hide()
+        binding.drawerLayout.searchProgress.visibility = View.GONE
         binding.drawerLayout.search.isEnabled = true
     }
 
