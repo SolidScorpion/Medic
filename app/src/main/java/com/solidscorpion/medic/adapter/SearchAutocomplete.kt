@@ -5,12 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.Filter
-import android.widget.Filterable
+import com.solidscorpion.medic.pojo.SearchResultItem
 
-class SearchAutocomplete(context: Context) : BaseAdapter(), Filterable {
+class SearchAutocomplete(context: Context) : BaseAdapter() {
     private val layoutInflater = LayoutInflater.from(context)
-    private val filter = AutocompleteFilter()
+    val searchResults : MutableList<Map<String, SearchResultItem>> = mutableListOf()
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         return View(layoutInflater.context)
     }
@@ -20,21 +19,11 @@ class SearchAutocomplete(context: Context) : BaseAdapter(), Filterable {
     }
 
     override fun getItemId(position: Int): Long {
-        return  -1
+        return -1
     }
 
     override fun getCount(): Int {
-        return  -1
+        return 0
     }
 
-    override fun getFilter() = filter
-
-    class AutocompleteFilter : Filter() {
-        override fun performFiltering(constraint: CharSequence?): FilterResults {
-            return FilterResults()
-        }
-
-        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-        }
-    }
 }
