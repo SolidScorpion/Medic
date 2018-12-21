@@ -13,6 +13,7 @@ import android.view.inputmethod.EditorInfo
 import android.webkit.SslErrorHandler
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
+import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var presenter: MainActivityContract.Presenter
+    private var spinnerCheck = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,9 +108,20 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
     }
 
     override fun showResults(results: List<BaseItem>) {
-        val adapter = CustomArrayAdapter(this, R.layout.autocomplete_item, results)
+        val adapter = CustomArrayAdapter(this, results)
         spinner.adapter = adapter
         spinner.performClick()
+        spinnerCheck = 0
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if(++spinnerCheck > 1) {
+                    binding.webview.loadUrl(adapter.getBaseItem(position).url.plus("/?app"))
+                    slideUp(binding.drawerLayout.drawerContainer)
+                    spinnerCheck = 0
+                }
+            }
+        }
     }
 
     private fun loadEmptySearch() {

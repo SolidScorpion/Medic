@@ -66,6 +66,7 @@ class MainActivityPresenter(
         val parsedResult = ArrayList<BaseItem>()
         for (result in searchResults) {
             result.forEach { (s: String, searchResultItem: SearchResultItem) ->
+                parsedResult.add(BaseItem("Divider", "",0))
                 parsedResult.add(BaseItem(searchResultItem.displayName, "", 0))
                 parsedResult.addAll(searchResultItem.items)
             }
