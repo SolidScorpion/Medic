@@ -148,6 +148,11 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         startActivity(sendIntent)
     }
 
+    open fun openMain(view: View){
+        slideUp(binding.drawerLayout.drawerContainer)
+        binding.webview.loadUrl("https://dev.medic.co.il/?app")
+    }
+
     override fun onStop() {
         presenter.onStop()
         super.onStop()
