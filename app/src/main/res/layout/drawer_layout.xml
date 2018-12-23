@@ -108,6 +108,5 @@
                 android:layout_marginStart="@dimen/base_dimen"
                 android:layout_marginEnd="@dimen/base_dimen"
                 android:layout_height="match_parent"/>
-
     </LinearLayout>
 </layout>

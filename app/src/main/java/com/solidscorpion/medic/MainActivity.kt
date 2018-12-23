@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         }
         binding.drawerLayout.search.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(v.text)) {
-                presenter.performSearch(v.text)
+                presenter.performSearch(v.text, 0)
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val text = s?.toString() ?: ""
-                presenter.performSearch(text)
+                presenter.performSearch(text, 1)
             }
         })
         binding.drawerLayout.closeDrawer.setOnClickListener { slideUp(binding.drawerLayout.drawerContainer) }

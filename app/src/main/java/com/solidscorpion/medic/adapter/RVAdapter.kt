@@ -30,6 +30,8 @@ class RVAdapter(context: Context, val data: List<ModelMenuItem>, val onClick: (M
     override fun getItemViewType(position: Int): Int {
         if (data[position].title.length == 1) {
             return R.layout.separator
+        } else if (data[position].title.length == 2){
+            return R.layout.copyright_item
         }
         return R.layout.item
     }

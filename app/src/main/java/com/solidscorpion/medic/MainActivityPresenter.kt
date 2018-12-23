@@ -32,6 +32,8 @@ class MainActivityPresenter(
                     val footerSeparator = ModelMenuItem("2", "")
                     mutableListOf.add(footerSeparator)
                     mutableListOf.addAll(t2)
+                    mutableListOf.add(ModelMenuItem("3", ""))
+                    mutableListOf.add(ModelMenuItem("11", ""))
                     mutableListOf
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -48,10 +50,10 @@ class MainActivityPresenter(
         disposables.clear()
     }
 
-    override fun performSearch(text: CharSequence) {
+    override fun performSearch(text: CharSequence, delay: Long) {
         disposables.clear()
         disposables.add(
-                Single.timer(1, TimeUnit.SECONDS)
+                Single.timer(delay, TimeUnit.SECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
                         .map { view.showProgress() }
                         .flatMap { api.performSearch(text.toString()).subscribeOn(Schedulers.io()) }
