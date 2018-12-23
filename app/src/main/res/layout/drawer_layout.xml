@@ -72,7 +72,7 @@
                     android:maxLines="1"
                     android:background="@drawable/oval_background"
                     android:hint="@string/search_israel_drug_index"
-                    android:paddingEnd="16dp"
+                    android:paddingEnd="32dp"
                     android:paddingStart="16dp"
                     android:inputType="text"
                     android:imeOptions="actionDone"
