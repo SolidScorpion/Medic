@@ -29,7 +29,7 @@
                             android:layout_marginBottom="16dp"
                             android:visibility="gone"
                             android:layout_gravity="start|center_vertical"
-                            android:src="@mipmap/ic_share"/>
+                            android:src="@drawable/ic_share_black_24dp"/>
                     <ImageView
                             android:layout_marginEnd="@dimen/base_dimen"
                             android:layout_marginStart="@dimen/base_dimen"
