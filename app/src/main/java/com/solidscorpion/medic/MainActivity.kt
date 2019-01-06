@@ -4,6 +4,7 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Typeface
 import android.net.http.SslError
 import android.os.Bundle
 import android.text.Editable
@@ -114,6 +115,9 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
                 presenter.performSearch(text, 1)
             }
         })
+        binding.drawerLayout.search.typeface = Typeface.createFromAsset(assets,
+                "fonts/IBMPlexSans-Text.ttf")
+        binding.drawerLayout.search.textSize = 17F
         binding.drawerLayout.closeDrawer.setOnClickListener { slideUp(binding.drawerLayout.drawerContainer) }
         binding.drawerLayout.menu.layoutManager = LinearLayoutManager(this)
         presenter.loadMenuItems()

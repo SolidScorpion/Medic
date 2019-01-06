@@ -1,6 +1,7 @@
 package com.solidscorpion.medic.adapter
 
 import android.content.Context
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ class RVAdapter(context: Context, val data: List<ModelMenuItem>, val onClick: (M
     RecyclerView.Adapter<RVAdapter.ViewHolder>() {
 
     private val mInflater: LayoutInflater = LayoutInflater.from(context)
+    private var sepCount = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = mInflater.inflate(viewType, parent, false)
@@ -38,8 +40,24 @@ class RVAdapter(context: Context, val data: List<ModelMenuItem>, val onClick: (M
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model = data[position]
+        if (getItemViewType(position) == R.layout.separator) sepCount++
         if (getItemViewType(position) == R.layout.item) {
-            holder.myTextView?.text = model.title
+            if (sepCount < 2) {
+                holder.myTextView?.text = model.title.toUpperCase()
+                holder.myTextView?.typeface = Typeface.createFromAsset(holder.myTextView?.rootView?.context?.assets,
+                        "fonts/IBMPlexSans-Bold.ttf")
+                holder.myTextView?.textSize = 15F
+            } else {
+                holder.myTextView?.text = model.title
+                holder.myTextView?.typeface = Typeface.createFromAsset(holder.myTextView?.rootView?.context?.assets,
+                        "fonts/IBMPlexSans-Text.ttf")
+                holder.myTextView?.textSize = 14F
+            }
+        } else if (getItemViewType(position) == R.layout.copyright_item) {
+            holder.myTextView?.typeface = Typeface.createFromAsset(holder.myTextView?.rootView?.context?.assets,
+                    "fonts/IBMPlexSans-Text.ttf")
+            holder.myTextView?.textSize = 12F
+            sepCount = 0
         }
     }
 
