@@ -1,5 +1,7 @@
 package com.solidscorpion.medic
 
+import android.annotation.TargetApi
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.http.SslError
@@ -26,6 +28,10 @@ import com.solidscorpion.medic.pojo.BaseItem
 import com.solidscorpion.medic.pojo.ModelMenuItem
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.drawer_layout.*
+import android.os.Build
+import android.os.Handler
+import android.view.inputmethod.InputMethodManager
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), MainActivityContract.View {
@@ -36,6 +42,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        forceRTLIfSupported()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         val application = (application as MedicApplication)
         presenter = MainActivityPresenter(this, application.api)
@@ -45,9 +52,10 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
                 binding.pbLoading.visibility = View.VISIBLE
                 if (url != "https://dev.medic.co.il/?app") {
                     binding.toolbar.btnShare.visibility = View.VISIBLE
-                }
-                else {
+                    binding.toolbar.imgBack.visibility = View.VISIBLE
+                } else {
                     binding.toolbar.btnShare.visibility = View.GONE
+                    binding.toolbar.imgBack.visibility = View.GONE
                 }
                 super.onPageStarted(view, url, favicon)
             }
@@ -60,9 +68,9 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 if (!request.hasGesture()) return false
                 binding.webview.loadUrl(StringBuilder()
-                    .append(request.url)
-                    .append("?app")
-                    .toString())
+                        .append(request.url)
+                        .append("?app")
+                        .toString())
                 return true
             }
 
@@ -73,7 +81,13 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         }
         binding.drawerLayout.search.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(v.text)) {
-                presenter.performSearch(v.text, 0)
+                val input = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                input.hideSoftInputFromWindow(search
+                        .applicationWindowToken,
+                        InputMethodManager.HIDE_NOT_ALWAYS)
+                Handler().postDelayed({
+                    loadEmptySearch()
+                }, 700)
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
@@ -104,7 +118,14 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         binding.drawerLayout.menu.layoutManager = LinearLayoutManager(this)
         presenter.loadMenuItems()
         binding.drawerLayout.searchIcon.setOnClickListener { loadEmptySearch() }
+        binding.toolbar.imgBack.setOnClickListener { onBackPressed() }
+    }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private fun forceRTLIfSupported() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
+        }
     }
 
     override fun showResults(results: List<BaseItem>) {
@@ -112,11 +133,11 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         spinner.adapter = adapter
         spinner.performClick()
         spinnerCheck = 0
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if(++spinnerCheck > 1) {
-                    binding.webview.loadUrl(adapter.getBaseItem(position).url.plus("/?app"))
+                if (++spinnerCheck > 1) {
+                    binding.webview.loadUrl(adapter.getBaseItem(position).url)
                     slideUp(binding.drawerLayout.drawerContainer)
                     spinnerCheck = 0
                 }
@@ -125,8 +146,8 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
     }
 
     private fun loadEmptySearch() {
-        binding.webview.loadUrl("https://dev.medic.co.il/medic-search/${binding.drawerLayout.search.text}".plus("/?app"))
         slideUp(binding.drawerLayout.drawerContainer)
+        binding.webview.loadUrl("https://dev.medic.co.il/medic-search/${binding.drawerLayout.search.text}".plus("/?app"))
     }
 
     override fun showProgress() {
@@ -148,7 +169,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         startActivity(sendIntent)
     }
 
-    open fun openMain(view: View){
+    open fun openMain(view: View) {
         slideUp(binding.drawerLayout.drawerContainer)
         binding.webview.loadUrl("https://dev.medic.co.il/?app")
     }
@@ -162,11 +183,10 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         val adapter = RVAdapter(this, items) {
             if (it.link.length > 1 || it.link == "/") {
                 binding.webview.loadUrl(
-                    StringBuilder()
-                        .append("https://dev.medic.co.il")
-                        .append(it.link)
-                        .append("?app")
-                        .toString()
+                        StringBuilder()
+                                .append("https://dev.medic.co.il")
+                                .append(it.link)
+                                .toString()
                 )
                 slideUp(binding.drawerLayout.drawerContainer)
             }
