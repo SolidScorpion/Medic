@@ -1,69 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:focusableInTouchMode="true">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="58dp"
                     android:background="?attr/colorPrimary"
                     android:gravity="center_vertical|start"
                     app:layout_scrollFlags="scroll|enterAlways|snap"
                     app:titleTextColor="@color/main_color">
 
-                    <ImageView
-                        android:id="@+id/btnShare"
-                        android:layout_width="wrap_content"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constLayout"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|center_vertical"
-                        android:layout_marginBottom="16dp"
-                        android:layout_marginTop="16dp"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/ic_share_big"
-                        android:visibility="gone" />
+                        android:background="@color/white">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|center_vertical"
-                        android:layout_marginEnd="@dimen/base_dimen"
-                        android:layout_marginStart="@dimen/base_dimen"
-                        android:onClick="openMain"
-                        android:src="@drawable/medic_logo" />
+                        <ImageView
+                            android:id="@+id/btnHome"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_marginTop="16dp"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/ic_menu"
+                            android:visibility="visible"
+                            app:layout_constraintBottom_toBottomOf="@+id/logo"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/logo" />
 
-                    <ImageView
-                        android:id="@+id/imgBack"
-                        android:layout_width="wrap_content"
-                        android:layout_height="24dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginTop="16dp"
-                        android:adjustViewBounds="true"
-                        android:layout_gravity="end|center_vertical"
-                        android:onClick="openMain"
-                        android:src="@drawable/ic_back"
-                        />
-                    <!--<ImageView-->
-                        <!--android:id="@+id/imgBack"-->
-                        <!--android:layout_gravity="end|center_vertical"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:layout_marginEnd="16dp"-->
-                        <!--android:src="@drawable/ic_keyboard_arrow_left_black_24dp" />-->
+                        <ImageView
+                            android:id="@+id/btnShare"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/ic_share_big"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@+id/logo"
+                            app:layout_constraintStart_toEndOf="@+id/btnHome"
+                            app:layout_constraintTop_toTopOf="@+id/logo" />
 
+                        <ImageView
+                            android:id="@+id/logo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end|top"
+                            android:layout_marginEnd="@dimen/base_dimen"
+                            android:layout_marginStart="@dimen/base_dimen"
+                            android:layout_marginTop="8dp"
+                            android:onClick="openMain"
+                            android:src="@drawable/medic_logo"
+                            app:layout_constraintEnd_toEndOf="@+id/imgBack"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/imgBack"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:adjustViewBounds="true"
+                            android:onClick="openMain"
+                            android:src="@drawable/ic_back"
+                            app:layout_constraintBottom_toBottomOf="@+id/logo"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/logo" />
+
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/toolspinner"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginStart="8dp"
+                            android:background="@null"
+                            android:dropDownVerticalOffset="35dp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@+id/toolsearch"
+                            app:layout_constraintEnd_toEndOf="@+id/toolsearch"
+                            app:layout_constraintStart_toStartOf="@+id/toolsearch"
+                            app:layout_constraintTop_toTopOf="@+id/toolsearch" />
+
+                        <EditText
+                            android:id="@+id/toolsearch"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/oval_background"
+                            android:hint="@string/search_israel_drug_index"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:paddingEnd="32dp"
+                            android:paddingStart="16dp"
+                            android:textColor="@color/main_color"
+                            android:textColorHint="@color/main_color"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/logo" />
+
+                        <ImageView
+                            android:id="@+id/searchIcon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/tinted_drawable"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@+id/toolsearch"
+                            app:layout_constraintEnd_toEndOf="@+id/toolsearch"
+                            app:layout_constraintTop_toTopOf="@+id/toolsearch" />
+
+                        <ProgressBar
+                            android:id="@+id/toolsearchProgress"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:theme="@style/AppTheme.Progress"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@+id/toolsearch"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/toolsearch"
+                            tools:visibility="visible" />
+
+                        <!--<androidx.constraintlayout.widget.Group-->
+                            <!--android:id="@+id/group_search"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--app:constraint_referenced_ids="searchIcon, toolsearch, toolspinner"-->
+                            <!--android:visibility="gone"/>-->
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.AppBarLayout>
+
 
             <com.solidscorpion.medic.view.NestedWebView
                 android:id="@+id/webview"
@@ -73,6 +163,9 @@
 
             </com.solidscorpion.medic.view.NestedWebView>
 
+            <include
+                android:id="@+id/drawerLayout"
+                layout="@layout/drawer_layout" />
             <ProgressBar
                 android:id="@+id/pbLoading"
                 style="?android:attr/progressBarStyle"
@@ -82,10 +175,6 @@
                 android:visibility="gone" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-        <include
-            android:id="@+id/drawerLayout"
-            layout="@layout/drawer_layout" />
     </FrameLayout>
 
 

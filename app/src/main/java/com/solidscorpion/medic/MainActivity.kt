@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.drawer_layout.*
 import android.os.Build
 import android.os.Handler
 import android.view.inputmethod.InputMethodManager
+import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var presenter: MainActivityContract.Presenter
+    private var isMenuOpened = false
     private var spinnerCheck = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,9 +56,11 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
                 if (url != "https://dev.medic.co.il/?app") {
                     binding.toolbar.btnShare.visibility = View.VISIBLE
                     binding.toolbar.imgBack.visibility = View.VISIBLE
+                    setCustomToolbar(100)
                 } else {
                     binding.toolbar.btnShare.visibility = View.GONE
                     binding.toolbar.imgBack.visibility = View.GONE
+                    setCustomToolbar(58)
                 }
                 super.onPageStarted(view, url, favicon)
             }
@@ -80,10 +84,10 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
                 super.onReceivedSslError(view, handler, error)
             }
         }
-        binding.drawerLayout.search.setOnEditorActionListener { v, actionId, _ ->
+        binding.toolbar.toolsearch.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(v.text)) {
                 val input = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                input.hideSoftInputFromWindow(search
+                input.hideSoftInputFromWindow(toolsearch
                         .applicationWindowToken,
                         InputMethodManager.HIDE_NOT_ALWAYS)
                 Handler().postDelayed({
@@ -99,11 +103,9 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         binding.webview.loadUrl("https://dev.medic.co.il/?app")
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
             title = ""
-            setHomeAsUpIndicator(ResourcesCompat.getDrawable(resources, R.drawable.ic_menu_black_24dp, theme))
         }
-        binding.drawerLayout.search.addTextChangedListener(object : TextWatcher {
+        binding.toolbar.toolsearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -115,14 +117,31 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
                 presenter.performSearch(text, 1)
             }
         })
-        binding.drawerLayout.search.typeface = Typeface.createFromAsset(assets,
+        binding.toolbar.toolsearch.typeface = Typeface.createFromAsset(assets,
                 "fonts/IBMPlexSans-Text.ttf")
-        binding.drawerLayout.search.textSize = 17F
-        binding.drawerLayout.closeDrawer.setOnClickListener { slideUp(binding.drawerLayout.drawerContainer) }
+        binding.toolbar.toolsearch.textSize = 17F
         binding.drawerLayout.menu.layoutManager = LinearLayoutManager(this)
         presenter.loadMenuItems()
-        binding.drawerLayout.searchIcon.setOnClickListener { loadEmptySearch() }
+        binding.toolbar.searchIcon.setOnClickListener { loadEmptySearch() }
         binding.toolbar.imgBack.setOnClickListener { onBackPressed() }
+        binding.toolbar.btnHome.setOnClickListener {
+            isMenuOpened = if (isMenuOpened) {
+                if (binding.webview.url == "https://dev.medic.co.il/?app") {
+                    setCustomToolbar(58)
+                }
+                enableScroll()
+                slideUp(binding.drawerLayout.drawerContainer)
+                false
+            } else {
+                if (binding.webview.url == "https://dev.medic.co.il/?app") {
+                    setCustomToolbar(100)
+
+                }
+                disableScroll()
+                slideDown(binding.drawerLayout.drawerContainer)
+                true
+            }
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -134,10 +153,10 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
 
     override fun showResults(results: List<BaseItem>) {
         val adapter = CustomArrayAdapter(this, results)
-        spinner.adapter = adapter
-        spinner.performClick()
+        binding.toolbar.toolspinner.adapter = adapter
+        binding.toolbar.toolspinner.performClick()
         spinnerCheck = 0
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.toolbar.toolspinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (++spinnerCheck > 1) {
@@ -151,17 +170,50 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
 
     private fun loadEmptySearch() {
         slideUp(binding.drawerLayout.drawerContainer)
-        binding.webview.loadUrl("https://dev.medic.co.il/medic-search/${binding.drawerLayout.search.text}".plus("/?app"))
+        binding.webview.loadUrl("https://dev.medic.co.il/medic-search/${binding.toolbar.toolsearch.text}".plus("/?app"))
+    }
+
+    private fun disableScroll() {
+        val params = toolbar.layoutParams as AppBarLayout.LayoutParams
+        params.scrollFlags = 0
+        appbar.requestLayout()
+    }
+
+    private fun enableScroll() {
+        val params = toolbar.layoutParams as AppBarLayout.LayoutParams
+        params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
+        appbar.requestLayout()
+    }
+
+    private fun setCustomToolbar(dp: Int) {
+        if (dp == 100) {
+            binding.toolbar.toolsearch.visibility = View.VISIBLE
+            binding.toolbar.toolspinner.visibility = View.VISIBLE
+            binding.toolbar.searchIcon.visibility = View.VISIBLE
+        } else {
+            binding.toolbar.toolsearch.visibility = View.GONE
+            binding.toolbar.toolspinner.visibility = View.GONE
+            binding.toolbar.searchIcon.visibility = View.GONE
+        }
+        setToolbarHeight(dp)
+    }
+
+    private fun setToolbarHeight(dp: Int) {
+        val params = toolbar.layoutParams as AppBarLayout.LayoutParams
+        var scale = resources.displayMetrics.density
+        val pixels = (dp * scale + 0.5f)
+        params.height = pixels.toInt()
+        appbar.requestLayout()
     }
 
     override fun showProgress() {
-        binding.drawerLayout.searchProgress.visibility = View.VISIBLE
-        binding.drawerLayout.search.isEnabled = false
+        binding.toolbar.toolsearchProgress.visibility = View.VISIBLE
+        binding.toolbar.toolsearch.isEnabled = false
     }
 
     override fun hideProgress() {
-        binding.drawerLayout.searchProgress.visibility = View.GONE
-        binding.drawerLayout.search.isEnabled = true
+        binding.toolbar.toolsearchProgress.visibility = View.GONE
+        binding.toolbar.toolsearch.isEnabled = true
     }
 
     private fun onShareClicked(url: String) {
@@ -216,10 +268,12 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
 
     private fun slideUp(view: View) {
         view.animate().translationY(-view.height.toFloat()).setDuration(500).start()
+        binding.toolbar.btnHome.setImageResource(R.drawable.ic_menu)
     }
 
     private fun slideDown(view: View) {
         view.animate().translationY(0f).setDuration(500).start()
+        binding.toolbar.btnHome.setImageResource(R.drawable.ic_close_black_24dp)
     }
 
 }
