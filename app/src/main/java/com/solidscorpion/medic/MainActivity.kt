@@ -86,10 +86,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         }
         binding.toolbar.toolsearch.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(v.text)) {
-                val input = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                input.hideSoftInputFromWindow(toolsearch
-                        .applicationWindowToken,
-                        InputMethodManager.HIDE_NOT_ALWAYS)
+                hideKeyboard()
                 Handler().postDelayed({
                     loadEmptySearch()
                 }, 700)
@@ -126,18 +123,28 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         binding.toolbar.imgBack.setOnClickListener { onBackPressed() }
         binding.toolbar.btnHome.setOnClickListener {
             isMenuOpened = if (isMenuOpened) {
-                if (binding.webview.url == "https://dev.medic.co.il/?app") {
-                    setCustomToolbar(58)
+                hideKeyboard()
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                if (imm.isAcceptingText) {
+                    Handler().postDelayed({
+                        if (binding.webview.url == "https://dev.medic.co.il/?app") {
+                            setCustomToolbar(58)
+                        }
+                        slideUp(binding.drawerLayout.drawerContainer)
+                    }, 700)
+                } else {
+                    if (binding.webview.url == "https://dev.medic.co.il/?app") {
+                        setCustomToolbar(58)
+                    }
+                    slideUp(binding.drawerLayout.drawerContainer)
                 }
-                enableScroll()
-                slideUp(binding.drawerLayout.drawerContainer)
                 false
             } else {
+                hideKeyboard()
                 if (binding.webview.url == "https://dev.medic.co.il/?app") {
                     setCustomToolbar(100)
 
                 }
-                disableScroll()
                 slideDown(binding.drawerLayout.drawerContainer)
                 true
             }
@@ -166,6 +173,13 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
                 }
             }
         }
+    }
+
+    private fun hideKeyboard() {
+        val input = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        input.hideSoftInputFromWindow(toolsearch
+                .applicationWindowToken,
+                InputMethodManager.HIDE_NOT_ALWAYS)
     }
 
     private fun loadEmptySearch() {
@@ -267,11 +281,13 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
     }
 
     private fun slideUp(view: View) {
+        enableScroll()
         view.animate().translationY(-view.height.toFloat()).setDuration(500).start()
         binding.toolbar.btnHome.setImageResource(R.drawable.ic_menu)
     }
 
     private fun slideDown(view: View) {
+        disableScroll()
         view.animate().translationY(0f).setDuration(500).start()
         binding.toolbar.btnHome.setImageResource(R.drawable.ic_close_black_24dp)
     }
