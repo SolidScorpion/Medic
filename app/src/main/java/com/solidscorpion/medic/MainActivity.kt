@@ -87,6 +87,9 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         binding.toolbar.toolsearch.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(v.text)) {
                 hideKeyboard()
+                clearSearch()
+                isMenuOpened = false
+                presenter.onStop()
                 Handler().postDelayed({
                     loadEmptySearch()
                 }, 700)
@@ -111,7 +114,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val text = s?.toString() ?: ""
-                presenter.performSearch(text, 1)
+                if (!text.isEmpty())presenter.performSearch(text, 1)
             }
         })
         binding.toolbar.toolsearch.typeface = Typeface.createFromAsset(assets,
@@ -151,6 +154,11 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         }
     }
 
+    private fun clearSearch() {
+        binding.toolbar.toolsearch.setText("")
+        binding.toolbar.toolsearch.clearFocus()
+    }
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private fun forceRTLIfSupported() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -167,6 +175,8 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (++spinnerCheck > 1) {
+                    clearSearch()
+                    isMenuOpened = false
                     binding.webview.loadUrl(adapter.getBaseItem(position).url)
                     slideUp(binding.drawerLayout.drawerContainer)
                     spinnerCheck = 0
