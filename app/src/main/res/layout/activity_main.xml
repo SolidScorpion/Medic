@@ -87,28 +87,15 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/logo" />
 
-                        <androidx.appcompat.widget.AppCompatSpinner
-                            android:id="@+id/toolspinner"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginStart="8dp"
-                            android:background="@null"
-                            android:dropDownVerticalOffset="35dp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="@+id/toolsearch"
-                            app:layout_constraintEnd_toEndOf="@+id/toolsearch"
-                            app:layout_constraintStart_toStartOf="@+id/toolsearch"
-                            app:layout_constraintTop_toTopOf="@+id/toolsearch" />
-
-                        <EditText
-                            android:id="@+id/toolsearch"
+                        <AutoCompleteTextView
+                            android:id="@+id/autocomplete"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="16dp"
                             android:layout_marginTop="8dp"
                             android:background="@drawable/oval_background"
                             android:hint="@string/search_israel_drug_index"
+                            android:completionThreshold="1"
                             android:imeOptions="actionDone"
                             android:inputType="text"
                             android:maxLines="1"
@@ -128,9 +115,9 @@
                             android:layout_marginEnd="8dp"
                             android:src="@drawable/tinted_drawable"
                             android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="@+id/toolsearch"
-                            app:layout_constraintEnd_toEndOf="@+id/toolsearch"
-                            app:layout_constraintTop_toTopOf="@+id/toolsearch" />
+                            app:layout_constraintBottom_toBottomOf="@+id/autocomplete"
+                            app:layout_constraintEnd_toEndOf="@+id/autocomplete"
+                            app:layout_constraintTop_toTopOf="@+id/autocomplete" />
 
                         <ProgressBar
                             android:id="@+id/toolsearchProgress"
@@ -138,10 +125,10 @@
                             android:layout_height="0dp"
                             android:theme="@style/AppTheme.Progress"
                             android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="@+id/toolsearch"
+                            app:layout_constraintBottom_toBottomOf="@+id/autocomplete"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/toolsearch"
+                            app:layout_constraintTop_toTopOf="@+id/autocomplete"
                             tools:visibility="visible" />
 
                         <!--<androidx.constraintlayout.widget.Group-->

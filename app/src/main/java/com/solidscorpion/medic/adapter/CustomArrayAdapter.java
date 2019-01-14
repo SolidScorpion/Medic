@@ -40,6 +40,16 @@ public class CustomArrayAdapter extends ArrayAdapter<String> {
     }
 
     @Override
+    public int getCount() {
+        return items.size();
+    }
+
+    @Override
+        public String getItem(int position) {
+            return items.get(position).getText();
+    }
+
+    @Override
     public View getDropDownView(int position, @Nullable View convertView,
                                 @NonNull ViewGroup parent) {
         return createItemView(position, convertView, parent);
@@ -86,4 +96,5 @@ public class CustomArrayAdapter extends ArrayAdapter<String> {
         }
         return resource;
     }
+
 }

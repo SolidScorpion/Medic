@@ -14,5 +14,5 @@ interface Api {
     fun getFooterMenuItems() : Single<List<ModelMenuItem>>
 
     @GET("wp-content/themes/rgb/ajax/rgb-ajax.php?action=rgb_search&format=json&number=3")
-    fun performSearch(@Query(value = "search")searchString: String) : Single<SearchResults>
+    fun performSearch(@Query(value = "search", encoded = true)searchString: String) : Single<SearchResults>
 }

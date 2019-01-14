@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.drawer_layout.*
 import android.os.Build
 import android.os.Handler
 import android.view.inputmethod.InputMethodManager
+import android.widget.Spinner
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -41,7 +42,6 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
     private lateinit var binding: ActivityMainBinding
     private lateinit var presenter: MainActivityContract.Presenter
     private var isMenuOpened = false
-    private var spinnerCheck = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,14 +84,14 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
                 super.onReceivedSslError(view, handler, error)
             }
         }
-        binding.toolbar.toolsearch.setOnEditorActionListener { v, actionId, _ ->
+        binding.toolbar.autocomplete.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(v.text)) {
                 hideKeyboard()
-                clearSearch()
                 isMenuOpened = false
                 presenter.onStop()
                 Handler().postDelayed({
                     loadEmptySearch()
+                    clearSearch()
                 }, 700)
                 return@setOnEditorActionListener true
             }
@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         supportActionBar?.apply {
             title = ""
         }
-        binding.toolbar.toolsearch.addTextChangedListener(object : TextWatcher {
+        binding.toolbar.autocomplete.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -113,13 +113,16 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//                imm.hideSoftInputFromWindow(binding.toolbar.toolsearch.windowToken, 0)
+//                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
                 val text = s?.toString() ?: ""
-                if (!text.isEmpty())presenter.performSearch(text, 1)
+                if (!text.isEmpty()) presenter.performSearch(text, 0)
             }
         })
-        binding.toolbar.toolsearch.typeface = Typeface.createFromAsset(assets,
+        binding.toolbar.autocomplete.typeface = Typeface.createFromAsset(assets,
                 "fonts/IBMPlexSans-Text.ttf")
-        binding.toolbar.toolsearch.textSize = 17F
+        binding.toolbar.autocomplete.textSize = 17F
         binding.drawerLayout.menu.layoutManager = LinearLayoutManager(this)
         presenter.loadMenuItems()
         binding.toolbar.searchIcon.setOnClickListener { loadEmptySearch() }
@@ -155,8 +158,8 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
     }
 
     private fun clearSearch() {
-        binding.toolbar.toolsearch.setText("")
-        binding.toolbar.toolsearch.clearFocus()
+        binding.toolbar.autocomplete.setText("")
+        binding.toolbar.autocomplete.clearFocus()
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -168,33 +171,32 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
 
     override fun showResults(results: List<BaseItem>) {
         val adapter = CustomArrayAdapter(this, results)
-        binding.toolbar.toolspinner.adapter = adapter
-        binding.toolbar.toolspinner.performClick()
-        spinnerCheck = 0
-        binding.toolbar.toolspinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (++spinnerCheck > 1) {
-                    clearSearch()
-                    isMenuOpened = false
-                    binding.webview.loadUrl(adapter.getBaseItem(position).url)
+        binding.toolbar.autocomplete.setAdapter(adapter)
+        adapter.notifyDataSetChanged()
+        binding.toolbar.autocomplete.onItemClickListener = object : AdapterView.OnItemClickListener {
+            override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                hideKeyboard()
+                clearSearch()
+                presenter.onStop()
+                isMenuOpened = false
+                Handler().postDelayed({
+                    binding.webview.loadUrl(adapter.getBaseItem(p2).url)
                     slideUp(binding.drawerLayout.drawerContainer)
-                    spinnerCheck = 0
-                }
+                }, 700)
             }
         }
     }
 
     private fun hideKeyboard() {
         val input = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        input.hideSoftInputFromWindow(toolsearch
+        input.hideSoftInputFromWindow(autocomplete
                 .applicationWindowToken,
                 InputMethodManager.HIDE_NOT_ALWAYS)
     }
 
     private fun loadEmptySearch() {
         slideUp(binding.drawerLayout.drawerContainer)
-        binding.webview.loadUrl("https://dev.medic.co.il/medic-search/${binding.toolbar.toolsearch.text}".plus("/?app"))
+        binding.webview.loadUrl("https://dev.medic.co.il/medic-search/${binding.toolbar.autocomplete.text}".plus("/?app"))
     }
 
     private fun disableScroll() {
@@ -211,12 +213,10 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
 
     private fun setCustomToolbar(dp: Int) {
         if (dp == 100) {
-            binding.toolbar.toolsearch.visibility = View.VISIBLE
-            binding.toolbar.toolspinner.visibility = View.VISIBLE
+            binding.toolbar.autocomplete.visibility = View.VISIBLE
             binding.toolbar.searchIcon.visibility = View.VISIBLE
         } else {
-            binding.toolbar.toolsearch.visibility = View.GONE
-            binding.toolbar.toolspinner.visibility = View.GONE
+            binding.toolbar.autocomplete.visibility = View.GONE
             binding.toolbar.searchIcon.visibility = View.GONE
         }
         setToolbarHeight(dp)
@@ -232,12 +232,10 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
 
     override fun showProgress() {
         binding.toolbar.toolsearchProgress.visibility = View.VISIBLE
-        binding.toolbar.toolsearch.isEnabled = false
     }
 
     override fun hideProgress() {
         binding.toolbar.toolsearchProgress.visibility = View.GONE
-        binding.toolbar.toolsearch.isEnabled = true
     }
 
     private fun onShareClicked(url: String) {
