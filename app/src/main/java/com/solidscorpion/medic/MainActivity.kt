@@ -41,14 +41,12 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
     private lateinit var binding: ActivityMainBinding
 
-    private val FULL_TOOLBAR_OFFSET = -300
-    private val SMALL_TOOLBAR_OFFSET = -174
     private val FULL_TOOLBAR_HEIGHT_DP = 100
     private val SMALL_TOOLBAR_HEIGHT_DP = 58
 
     private lateinit var presenter: MainActivityContract.Presenter
     private var isMenuOpened = false
-    private var toolbarOffset = SMALL_TOOLBAR_OFFSET
+    private var toolbarOffset = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -221,11 +219,11 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
     private fun setCustomToolbar(dp: Int) {
         if (dp == FULL_TOOLBAR_HEIGHT_DP) {
-            toolbarOffset = FULL_TOOLBAR_OFFSET
+            toolbarOffset = calcOffset(FULL_TOOLBAR_HEIGHT_DP)
             binding.toolbar.autocomplete.visibility = View.VISIBLE
             binding.toolbar.searchIcon.visibility = View.VISIBLE
         } else {
-            toolbarOffset = SMALL_TOOLBAR_OFFSET
+            toolbarOffset = calcOffset(SMALL_TOOLBAR_HEIGHT_DP)
             binding.toolbar.autocomplete.visibility = View.GONE
             binding.toolbar.searchIcon.visibility = View.GONE
         }
@@ -238,6 +236,12 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
         val pixels = (dp * scale + 0.5f)
         params.height = pixels.toInt()
         appbar.requestLayout()
+    }
+
+    private fun calcOffset(dp: Int) : Int{
+        var scale = resources.displayMetrics.density
+        val pixels = (dp * scale + 0.5f)
+        return pixels.toInt() * -1
     }
 
     override fun showProgress() {
