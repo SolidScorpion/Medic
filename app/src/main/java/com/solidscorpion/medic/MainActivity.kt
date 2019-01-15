@@ -37,16 +37,24 @@ import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity(), MainActivityContract.View {
+class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayout.OnOffsetChangedListener {
 
     private lateinit var binding: ActivityMainBinding
+
+    private val FULL_TOOLBAR_OFFSET = -300
+    private val SMALL_TOOLBAR_OFFSET = -174
+    private val FULL_TOOLBAR_HEIGHT_DP = 100
+    private val SMALL_TOOLBAR_HEIGHT_DP = 58
+
     private lateinit var presenter: MainActivityContract.Presenter
     private var isMenuOpened = false
+    private var toolbarOffset = SMALL_TOOLBAR_OFFSET
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         forceRTLIfSupported()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.appbar.addOnOffsetChangedListener(this)
         val application = (application as MedicApplication)
         presenter = MainActivityPresenter(this, application.api)
         binding.webview.webViewClient = object : WebViewClientCompat() {
@@ -56,11 +64,11 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
                 if (url != "https://dev.medic.co.il/?app") {
                     binding.toolbar.btnShare.visibility = View.VISIBLE
                     binding.toolbar.imgBack.visibility = View.VISIBLE
-                    setCustomToolbar(100)
+                    setCustomToolbar(FULL_TOOLBAR_HEIGHT_DP)
                 } else {
                     binding.toolbar.btnShare.visibility = View.GONE
                     binding.toolbar.imgBack.visibility = View.GONE
-                    setCustomToolbar(58)
+                    setCustomToolbar(SMALL_TOOLBAR_HEIGHT_DP)
                 }
                 super.onPageStarted(view, url, favicon)
             }
@@ -134,13 +142,13 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
                 if (imm.isAcceptingText) {
                     Handler().postDelayed({
                         if (binding.webview.url == "https://dev.medic.co.il/?app") {
-                            setCustomToolbar(58)
+                            setCustomToolbar(SMALL_TOOLBAR_HEIGHT_DP)
                         }
                         slideUp(binding.drawerLayout.drawerContainer)
                     }, 700)
                 } else {
                     if (binding.webview.url == "https://dev.medic.co.il/?app") {
-                        setCustomToolbar(58)
+                        setCustomToolbar(SMALL_TOOLBAR_HEIGHT_DP)
                     }
                     slideUp(binding.drawerLayout.drawerContainer)
                 }
@@ -148,7 +156,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
             } else {
                 hideKeyboard()
                 if (binding.webview.url == "https://dev.medic.co.il/?app") {
-                    setCustomToolbar(100)
+                    setCustomToolbar(FULL_TOOLBAR_HEIGHT_DP)
 
                 }
                 slideDown(binding.drawerLayout.drawerContainer)
@@ -212,10 +220,12 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
     }
 
     private fun setCustomToolbar(dp: Int) {
-        if (dp == 100) {
+        if (dp == FULL_TOOLBAR_HEIGHT_DP) {
+            toolbarOffset = FULL_TOOLBAR_OFFSET
             binding.toolbar.autocomplete.visibility = View.VISIBLE
             binding.toolbar.searchIcon.visibility = View.VISIBLE
         } else {
+            toolbarOffset = SMALL_TOOLBAR_OFFSET
             binding.toolbar.autocomplete.visibility = View.GONE
             binding.toolbar.searchIcon.visibility = View.GONE
         }
@@ -298,6 +308,20 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View {
         disableScroll()
         view.animate().translationY(0f).setDuration(500).start()
         binding.toolbar.btnHome.setImageResource(R.drawable.ic_close_black_24dp)
+    }
+
+    override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
+//        appBarIsExpanded = (verticalOffset == 0)
+//        if (appBarIsExpanded) {
+//            binding.webview.loadUrl("javascript:HideInfoLineHeader()")
+//        } else {
+//            binding.webview.loadUrl("javascript:ShowInfoLineHeader()")
+//        }
+        if (verticalOffset == toolbarOffset){
+            binding.webview.loadUrl("javascript:ShowInfoLineHeader()")
+        } else if (verticalOffset > toolbarOffset){
+            binding.webview.loadUrl("javascript:HideInfoLineHeader()")
+        }
     }
 
 }
