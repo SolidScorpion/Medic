@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
@@ -15,7 +17,7 @@ import com.solidscorpion.medic.pojo.BaseItem;
 
 import java.util.List;
 
-public class CustomArrayAdapter extends ArrayAdapter<String> {
+public class CustomArrayAdapter extends ArrayAdapter<String> implements Filterable {
 
     private final LayoutInflater mInflater;
     private final Context mContext;
@@ -95,6 +97,30 @@ public class CustomArrayAdapter extends ArrayAdapter<String> {
             resource = R.layout.autocomplete_item;
         }
         return resource;
+    }
+
+    @Override
+    public Filter getFilter() {
+        Filter filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults filterResults = new FilterResults();
+                if (constraint != null) {
+                    filterResults.values = items;
+                    filterResults.count = items.size();
+                }
+                return filterResults;
+            }
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                if (results != null && results.count > 0) {
+                    notifyDataSetChanged();
+                }
+                else {
+                    notifyDataSetInvalidated();
+                }
+            }};
+        return filter;
     }
 
 }
