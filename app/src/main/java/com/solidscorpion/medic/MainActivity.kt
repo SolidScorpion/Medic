@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
     private lateinit var presenter: MainActivityContract.Presenter
     private var isMenuOpened = false
+    private var isSearchIcon = true
     private var toolbarOffset = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,13 +93,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
         }
         binding.toolbar.autocomplete.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(v.text)) {
-                hideKeyboard()
-                isMenuOpened = false
-                presenter.onStop()
-                Handler().postDelayed({
-                    loadEmptySearch()
-                    clearSearch()
-                }, 700)
+                onSearchClicked()
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
@@ -119,11 +114,12 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//                imm.hideSoftInputFromWindow(binding.toolbar.toolsearch.windowToken, 0)
-//                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
                 val text = s?.toString() ?: ""
-                if (!text.isEmpty()) presenter.performSearch(text, 0)
+                if (!text.isEmpty()) {
+                    presenter.performSearch(text, 0)
+                } else {
+                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search))
+                }
             }
         })
         binding.toolbar.autocomplete.typeface = Typeface.createFromAsset(assets,
@@ -131,7 +127,16 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
         binding.toolbar.autocomplete.textSize = 17F
         binding.drawerLayout.menu.layoutManager = LinearLayoutManager(this)
         presenter.loadMenuItems()
-        binding.toolbar.searchIcon.setOnClickListener { loadEmptySearch() }
+        binding.toolbar.searchIcon.setOnClickListener {
+            if (!TextUtils.isEmpty(binding.toolbar.autocomplete.text)) {
+                if (isSearchIcon) {
+                    onSearchClicked()
+                } else {
+                    binding.toolbar.autocomplete.setText("")
+                }
+
+            }
+        }
         binding.toolbar.imgBack.setOnClickListener { onBackPressed() }
         binding.toolbar.btnHome.setOnClickListener {
             isMenuOpened = if (isMenuOpened) {
@@ -163,6 +168,16 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
         }
     }
 
+    private fun onSearchClicked() {
+        hideKeyboard()
+        isMenuOpened = false
+        presenter.onStop()
+        Handler().postDelayed({
+            loadEmptySearch()
+            clearSearch()
+        }, 700)
+    }
+
     private fun clearSearch() {
         binding.toolbar.autocomplete.setText("")
         binding.toolbar.autocomplete.clearFocus()
@@ -176,6 +191,14 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
     }
 
     override fun showResults(results: List<BaseItem>) {
+        isSearchIcon = if (results.isNotEmpty()) {
+            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_close_black_24dp))
+            false
+        } else {
+            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search))
+            true
+        }
+
         val adapter = CustomArrayAdapter(this, results)
         binding.toolbar.autocomplete.setAdapter(adapter)
         adapter.notifyDataSetChanged()
@@ -238,18 +261,18 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
         appbar.requestLayout()
     }
 
-    private fun calcOffset(dp: Int) : Int{
+    private fun calcOffset(dp: Int): Int {
         var scale = resources.displayMetrics.density
         val pixels = (dp * scale + 0.5f)
         return pixels.toInt() * -1
     }
 
     override fun showProgress() {
-        binding.toolbar.toolsearchProgress.visibility = View.VISIBLE
+//        binding.toolbar.toolsearchProgress.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        binding.toolbar.toolsearchProgress.visibility = View.GONE
+//        binding.toolbar.toolsearchProgress.visibility = View.GONE
     }
 
     private fun onShareClicked(url: String) {
@@ -258,7 +281,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
             putExtra(Intent.EXTRA_TEXT, url.substring(0, url.length - 5))
             type = "text/plain"
         }
-        startActivity(sendIntent)
+        startActivity(Intent.createChooser(sendIntent, "Share using?"))
     }
 
     open fun openMain(view: View) {
@@ -272,17 +295,26 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
     }
 
     override fun onMenuItemsLoaded(items: List<ModelMenuItem>) {
-        val adapter = RVAdapter(this, items) {
-            if (it.link.length > 1 || it.link == "/") {
-                binding.webview.loadUrl(
+        val adapter = RVAdapter(this, items,
+                onClick = {
+                    if (it.link.length > 1 || it.link == "/") {
+                        binding.webview.loadUrl(
+                                StringBuilder()
+                                        .append("https://dev.medic.co.il")
+                                        .append(it.link)
+                                        .toString()
+                        )
+                        slideUp(binding.drawerLayout.drawerContainer)
+                    }
+                },
+                onSignUpClick = {
+                    binding.webview.loadUrl(
                         StringBuilder()
-                                .append("https://dev.medic.co.il")
-                                .append(it.link)
-                                .toString()
-                )
-                slideUp(binding.drawerLayout.drawerContainer)
-            }
-        }
+                            .append("https://dev.medic.co.il/subscribe")
+                            .append("/?app")
+                            .toString())
+                    slideUp(binding.drawerLayout.drawerContainer)
+        })
         binding.drawerLayout.menu.adapter = adapter
     }
 
@@ -321,9 +353,9 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 //        } else {
 //            binding.webview.loadUrl("javascript:ShowInfoLineHeader()")
 //        }
-        if (verticalOffset == toolbarOffset){
+        if (verticalOffset == toolbarOffset) {
             binding.webview.loadUrl("javascript:ShowInfoLineHeader()")
-        } else if (verticalOffset > toolbarOffset){
+        } else if (verticalOffset > toolbarOffset) {
             binding.webview.loadUrl("javascript:HideInfoLineHeader()")
         }
     }

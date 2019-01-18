@@ -25,15 +25,24 @@ class MainActivityPresenter(
         Single.zip(api.getMenuItems().subscribeOn(Schedulers.io()),
                 api.getFooterMenuItems().subscribeOn(Schedulers.io()),
                 BiFunction<List<ModelMenuItem>, List<ModelMenuItem>, List<ModelMenuItem>> { t1, t2 ->
-                    val separator = ModelMenuItem("1", "")
+
+                    var font = ModelMenuItem.HEADER_FONT
+                    val separator = ModelMenuItem("1", "", font)
                     val mutableListOf = mutableListOf<ModelMenuItem>()
+                    mutableListOf.add(ModelMenuItem("","", font))
                     mutableListOf.add(separator)
+                    for (model in t1) model.font = font
                     mutableListOf.addAll(t1)
-                    val footerSeparator = ModelMenuItem("2", "")
+
+                    font = ModelMenuItem.BOTTOM_FONT
+                    val footerSeparator = ModelMenuItem("2", "", font)
                     mutableListOf.add(footerSeparator)
+                    for (model in t2) model.font = font
                     mutableListOf.addAll(t2)
-                    mutableListOf.add(ModelMenuItem("3", ""))
-                    mutableListOf.add(ModelMenuItem("11", ""))
+                    mutableListOf.add(ModelMenuItem("3", "", font))
+
+                    font = ModelMenuItem.COPYRIGHT_FONT
+                    mutableListOf.add(ModelMenuItem("11", "", font))
                     mutableListOf
                 })
                 .observeOn(AndroidSchedulers.mainThread())
