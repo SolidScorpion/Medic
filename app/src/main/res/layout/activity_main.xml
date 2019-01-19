@@ -47,6 +47,20 @@
                             app:layout_constraintTop_toTopOf="@+id/logo" />
 
                         <ImageView
+                            android:id="@+id/btnUser"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginBottom="16dp"
+                            android:layout_marginTop="16dp"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/ic_user"
+                            android:visibility="visible"
+                            app:layout_constraintBottom_toBottomOf="@+id/logo"
+                            app:layout_constraintStart_toEndOf="@+id/btnHome"
+                            app:layout_constraintTop_toTopOf="@+id/logo" />
+
+                        <ImageView
                             android:id="@+id/btnShare"
                             android:layout_width="wrap_content"
                             android:layout_height="24dp"
@@ -57,7 +71,7 @@
                             android:src="@drawable/ic_share_big"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="@+id/logo"
-                            app:layout_constraintStart_toEndOf="@+id/btnHome"
+                            app:layout_constraintStart_toEndOf="@+id/btnUser"
                             app:layout_constraintTop_toTopOf="@+id/logo" />
 
                         <ImageView

@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.drawer_layout.*
 import android.os.Build
 import android.os.Handler
 import android.view.inputmethod.InputMethodManager
+import android.widget.AutoCompleteTextView
 import android.widget.Spinner
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_main.*
@@ -115,10 +116,15 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val text = s?.toString() ?: ""
+                if (autocomplete.isPopupShowing) {
+                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_close_black_24dp))
+                    isSearchIcon = false
+                }
                 if (!text.isEmpty()) {
                     presenter.performSearch(text, 0)
                 } else {
-                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search))
+                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.tinted_drawable))
+                    isSearchIcon = true
                 }
             }
         })
@@ -132,7 +138,10 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 if (isSearchIcon) {
                     onSearchClicked()
                 } else {
-                    binding.toolbar.autocomplete.setText("")
+                    binding.toolbar.autocomplete.dismissDropDown()
+                    (autocomplete.adapter as CustomArrayAdapter).clear()
+                    isSearchIcon = true
+                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.tinted_drawable))
                 }
 
             }
@@ -191,14 +200,6 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
     }
 
     override fun showResults(results: List<BaseItem>) {
-        isSearchIcon = if (results.isNotEmpty()) {
-            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_close_black_24dp))
-            false
-        } else {
-            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search))
-            true
-        }
-
         val adapter = CustomArrayAdapter(this, results)
         binding.toolbar.autocomplete.setAdapter(adapter)
         adapter.notifyDataSetChanged()
@@ -213,6 +214,13 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                     slideUp(binding.drawerLayout.drawerContainer)
                 }, 700)
             }
+        }
+        if (results.isNotEmpty() && autocomplete.text.isNotEmpty()) {
+            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_close_black_24dp))
+            isSearchIcon = false
+        } else {
+            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.tinted_drawable))
+            isSearchIcon = true
         }
     }
 
@@ -347,12 +355,6 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-//        appBarIsExpanded = (verticalOffset == 0)
-//        if (appBarIsExpanded) {
-//            binding.webview.loadUrl("javascript:HideInfoLineHeader()")
-//        } else {
-//            binding.webview.loadUrl("javascript:ShowInfoLineHeader()")
-//        }
         if (verticalOffset == toolbarOffset) {
             binding.webview.loadUrl("javascript:ShowInfoLineHeader()")
         } else if (verticalOffset > toolbarOffset) {

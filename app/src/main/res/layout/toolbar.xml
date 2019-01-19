@@ -1,132 +1,141 @@
-<?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/constLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constLayout"
-        android:layout_width="match_parent"
+
+    <ImageView
+        android:id="@+id/btnHome"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/ic_menu"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/logo" />
+
+    <ImageView
+        android:id="@+id/btnUser"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/ic_menu"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/logo"
+        app:layout_constraintStart_toEndOf="@+id/btnHome"
+        app:layout_constraintTop_toTopOf="@+id/logo" />
+
+    <ImageView
+        android:id="@+id/btnShare"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/ic_share_big"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/logo"
+        app:layout_constraintStart_toEndOf="@+id/btnUser"
+        app:layout_constraintTop_toTopOf="@+id/logo" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layoutDirection="rtl"
-        android:background="@color/white">
+        android:layout_gravity="end|top"
+        android:layout_marginEnd="26dp"
+        android:layout_marginStart="@dimen/base_dimen"
+        android:layout_marginTop="8dp"
+        android:onClick="openMain"
+        android:src="@drawable/medic_logo"
+        app:layout_constraintEnd_toEndOf="@+id/imgBack"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/btnHome"
-            android:layout_width="wrap_content"
-            android:layout_height="24dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ic_menu"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/logo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/logo" />
+    <ImageView
+        android:id="@+id/imgBack"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:adjustViewBounds="true"
+        android:onClick="openMain"
+        android:src="@drawable/ic_back"
+        app:layout_constraintBottom_toBottomOf="@+id/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/logo" />
 
-        <ImageView
-            android:id="@+id/btnShare"
-            android:layout_width="wrap_content"
-            android:layout_height="24dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ic_share_big"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/logo"
-            app:layout_constraintStart_toEndOf="@+id/btnHome"
-            app:layout_constraintTop_toTopOf="@+id/logo" />
+    <AutoCompleteTextView
+        android:id="@+id/autocomplete"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/oval_background"
+        android:hint="@string/search_israel_drug_index"
+        android:completionThreshold="1"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:maxLines="1"
+        android:paddingEnd="16dp"
+        android:paddingStart="32dp"
+        android:dropDownAnchor="@+id/dropAnchor"
+        android:textColor="@color/main_color"
+        android:textColorHint="@color/main_color"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo" />
 
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:layout_marginEnd="26dp"
-            android:layout_marginStart="@dimen/base_dimen"
-            android:layout_marginTop="8dp"
-            android:onClick="openMain"
-            android:src="@drawable/medic_logo"
-            app:layout_constraintEnd_toEndOf="@+id/imgBack"
-            app:layout_constraintTop_toTopOf="parent" />
+    <View
+        android:id="@+id/dropAnchor"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="@+id/autocomplete"
+        app:layout_constraintStart_toStartOf="@+id/autocomplete"
+        app:layout_constraintTop_toBottomOf="@+id/autocomplete"/>
 
-        <ImageView
-            android:id="@+id/imgBack"
-            android:layout_width="wrap_content"
-            android:layout_height="24dp"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:adjustViewBounds="true"
-            android:onClick="openMain"
-            android:src="@drawable/ic_back"
-            app:layout_constraintBottom_toBottomOf="@+id/logo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/logo" />
+    <ImageView
+        android:id="@+id/searchIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/tinted_drawable"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/autocomplete"
+        app:layout_constraintStart_toStartOf="@+id/autocomplete"
+        app:layout_constraintTop_toTopOf="@+id/autocomplete" />
 
-        <AutoCompleteTextView
-            android:id="@+id/autocomplete"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/oval_background"
-            android:completionThreshold="1"
-            android:dropDownAnchor="@+id/dropAnchor"
-            android:hint="@string/search_israel_drug_index"
-            android:imeOptions="actionDone"
-            android:inputType="text"
-            android:maxLines="1"
-            android:paddingEnd="32dp"
-            android:paddingStart="16dp"
-            android:textColor="@color/main_color"
-            android:textColorHint="@color/main_color"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/logo" />
+    <ProgressBar
+        android:id="@+id/toolsearchProgress"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:theme="@style/AppTheme.Progress"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/autocomplete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/autocomplete"
+        tools:visibility="visible" />
 
-        <View
-            android:id="@+id/dropAnchor"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/white"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="5dp"
-            app:layout_constraintEnd_toEndOf="@+id/autocomplete"
-            app:layout_constraintStart_toStartOf="@+id/autocomplete"
-            app:layout_constraintTop_toBottomOf="@+id/autocomplete"/>
-
-        <ImageView
-            android:id="@+id/searchIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/tinted_drawable"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/autocomplete"
-            app:layout_constraintEnd_toEndOf="@+id/autocomplete"
-            app:layout_constraintTop_toTopOf="@+id/autocomplete" />
-
-        <ProgressBar
-            android:id="@+id/toolsearchProgress"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:theme="@style/AppTheme.Progress"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/autocomplete"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/autocomplete"
-            tools:visibility="visible" />
-
-        <!--<androidx.constraintlayout.widget.Group-->
-        <!--android:id="@+id/group_search"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--app:constraint_referenced_ids="searchIcon, toolsearch, toolspinner"-->
-        <!--android:visibility="gone"/>-->
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</layout>
+    <!--<androidx.constraintlayout.widget.Group-->
+    <!--android:id="@+id/group_search"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--app:constraint_referenced_ids="searchIcon, toolsearch, toolspinner"-->
+    <!--android:visibility="gone"/>-->
+</androidx.constraintlayout.widget.ConstraintLayout>

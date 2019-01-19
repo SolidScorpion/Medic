@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
         android:layout_marginTop="16dp"
-        android:text="Already have an account? Log Here"
+        android:text="Already have an account? Login here"
         android:textColor="@android:color/black"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"

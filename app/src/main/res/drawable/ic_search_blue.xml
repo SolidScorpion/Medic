@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="811dp"
+    android:height="1024dp"
+    android:viewportWidth="811"
+    android:viewportHeight="1024">
+
+    <path
+        android:fillColor="@color/main_color"
+        android:pathData="M213 358q-3-3-6.5-4.5T198 352q-4 0-8 1.5t-7 4.5q-26 26-41 60t-15 73 15 73.5 41 59.5q3 2 7 4t8 2h1q9 0 15-6.5t6-15.5q0-4-1.5-8t-5.5-7q-20-20-31.5-46T170 491t11.5-56.5T213 389q3-3 5-7t2-8q0-5-2-9t-5-7zm591 566L597 716q40-45 63-102.5T683 491q0-71-27-133t-73.5-108.5T474 176t-133-27q-70 0-133 27-62 27-108 73.5T27 358 0 491q0 70 27 133 27 62 73 108t108 73q63 27 133 27h1q65 0 122.5-23T567 746v1l207 207q3 3 7 4.5t8 1.5q9 0 15-6t6-15q0-4-1.5-8t-4.5-7zM341 789q-62 0-116-23-54-24-94.5-64.5T66 607q-23-54-23-116t23-117q24-54 64.5-94.5T225 215q54-23 116-23t117 23q54 24 94.5 64.5T617 374q23 55 23 117t-23 116q-24 54-64.5 94.5T458 766q-55 23-117 23z" />
+</vector>
