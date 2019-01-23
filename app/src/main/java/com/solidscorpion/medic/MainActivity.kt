@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val text = s?.toString() ?: ""
                 if (autocomplete.isPopupShowing) {
-                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_close_icon))
+                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.new_close))
                     isSearchIcon = false
                 }
                 if (!text.isEmpty()) {
@@ -129,7 +129,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 } else {
                     if (binding.toolbar.autocomplete.adapter != null) {
                         (binding.toolbar.autocomplete.adapter as CustomArrayAdapter).clear()
-                        binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search_icon))
+                        binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search_blue))
                         isSearchIcon = true
                     }
                 }
@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                     binding.toolbar.autocomplete.dismissDropDown()
                     (autocomplete.adapter as CustomArrayAdapter).clear()
                     isSearchIcon = true
-                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search_icon))
+                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search_blue))
                 }
 
             }
@@ -225,10 +225,10 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
             }
         }
         if (results.isNotEmpty() && autocomplete.text.isNotEmpty()) {
-            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_close_icon))
+            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.new_close))
             isSearchIcon = false
         } else {
-            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search_icon))
+            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search_blue))
             isSearchIcon = true
         }
     }
