@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:text="@string/copyright_169_medic_publications_ltd"
         android:textAlignment="center"
-        android:textColor="@android:color/white"
+        android:textColor="@color/white_opacity_65"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

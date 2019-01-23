@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="939dp"
+    android:height="1024dp"
+    android:viewportWidth="939"
+    android:viewportHeight="1024">
+
+    <path
+        android:fillColor="@color/main_color"
+        android:pathData="M43 747h853q18 0 30.5 12.5T939 789q0 18-12.5 30.5T896 832H43q-18 0-30.5-12.5T0 789q0-17 12.5-29.5T43 747zm0-256h853q18 0 30.5 12.5T939 533q0 18-12.5 30.5T896 576H43q-18 0-30.5-12.5T0 533q0-17 12.5-29.5T43 491zm0-256h853q18 0 30.5 12.5T939 277q0 18-12.5 30.5T896 320H43q-18 0-30.5-12.5T0 277q0-17 12.5-29.5T43 235z" />
+</vector>

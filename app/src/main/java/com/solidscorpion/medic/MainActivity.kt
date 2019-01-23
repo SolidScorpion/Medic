@@ -18,7 +18,6 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.webkit.WebViewClientCompat
@@ -28,12 +27,10 @@ import com.solidscorpion.medic.databinding.ActivityMainBinding
 import com.solidscorpion.medic.pojo.BaseItem
 import com.solidscorpion.medic.pojo.ModelMenuItem
 import kotlinx.android.synthetic.main.activity_main.view.*
-import kotlinx.android.synthetic.main.drawer_layout.*
 import android.os.Build
 import android.os.Handler
+import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
-import android.widget.AutoCompleteTextView
-import android.widget.Spinner
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -80,10 +77,17 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 if (!request.hasGesture()) return false
-                binding.webview.loadUrl(StringBuilder()
-                        .append(request.url)
-                        .append("?app")
-                        .toString())
+                if (!request.url.toString().contains("?")) {
+                    binding.webview.loadUrl(StringBuilder()
+                            .append(request.url)
+                            .append("?app")
+                            .toString())
+                } else {
+                    binding.webview.loadUrl(StringBuilder()
+                            .append(request.url)
+                            .append("&app")
+                            .toString())
+                }
                 return true
             }
 
@@ -117,20 +121,23 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val text = s?.toString() ?: ""
                 if (autocomplete.isPopupShowing) {
-                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_close_black_24dp))
+                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_close_icon))
                     isSearchIcon = false
                 }
                 if (!text.isEmpty()) {
                     presenter.performSearch(text, 0)
                 } else {
-                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.tinted_drawable))
-                    isSearchIcon = true
+                    if (binding.toolbar.autocomplete.adapter != null) {
+                        (binding.toolbar.autocomplete.adapter as CustomArrayAdapter).clear()
+                        binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search_icon))
+                        isSearchIcon = true
+                    }
                 }
             }
         })
-        binding.toolbar.autocomplete.typeface = Typeface.createFromAsset(assets,
-                "fonts/IBMPlexSans-Text.ttf")
-        binding.toolbar.autocomplete.textSize = 17F
+//        binding.toolbar.autocomplete.typeface = Typeface.createFromAsset(assets,
+//                "fonts/IBMPlexSans-Text.ttf")
+//        binding.toolbar.autocomplete.textSize = 17F
         binding.drawerLayout.menu.layoutManager = LinearLayoutManager(this)
         presenter.loadMenuItems()
         binding.toolbar.searchIcon.setOnClickListener {
@@ -141,7 +148,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                     binding.toolbar.autocomplete.dismissDropDown()
                     (autocomplete.adapter as CustomArrayAdapter).clear()
                     isSearchIcon = true
-                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.tinted_drawable))
+                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search_icon))
                 }
 
             }
@@ -157,7 +164,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                             setCustomToolbar(SMALL_TOOLBAR_HEIGHT_DP)
                         }
                         slideUp(binding.drawerLayout.drawerContainer)
-                    }, 700)
+                    }, 1000)
                 } else {
                     if (binding.webview.url == "https://dev.medic.co.il/?app") {
                         setCustomToolbar(SMALL_TOOLBAR_HEIGHT_DP)
@@ -184,7 +191,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
         Handler().postDelayed({
             loadEmptySearch()
             clearSearch()
-        }, 700)
+        }, 1000)
     }
 
     private fun clearSearch() {
@@ -200,26 +207,28 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
     }
 
     override fun showResults(results: List<BaseItem>) {
+        if (autocomplete.text.isEmpty()) (results as ArrayList).clear()
         val adapter = CustomArrayAdapter(this, results)
         binding.toolbar.autocomplete.setAdapter(adapter)
         adapter.notifyDataSetChanged()
         binding.toolbar.autocomplete.onItemClickListener = object : AdapterView.OnItemClickListener {
             override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 hideKeyboard()
-                clearSearch()
                 presenter.onStop()
                 isMenuOpened = false
+                val selectedItem = adapter.getBaseItem(p2)
+                clearSearch()
                 Handler().postDelayed({
-                    binding.webview.loadUrl(adapter.getBaseItem(p2).url)
+                    binding.webview.loadUrl(selectedItem.url)
                     slideUp(binding.drawerLayout.drawerContainer)
-                }, 700)
+                }, 1000)
             }
         }
         if (results.isNotEmpty() && autocomplete.text.isNotEmpty()) {
-            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_close_black_24dp))
+            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_close_icon))
             isSearchIcon = false
         } else {
-            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.tinted_drawable))
+            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search_icon))
             isSearchIcon = true
         }
     }
@@ -266,7 +275,9 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
         var scale = resources.displayMetrics.density
         val pixels = (dp * scale + 0.5f)
         params.height = pixels.toInt()
+        appbar.setExpanded(true)
         appbar.requestLayout()
+        appbar.invalidate()
     }
 
     private fun calcOffset(dp: Int): Int {
@@ -293,7 +304,11 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
     }
 
     open fun openMain(view: View) {
-        slideUp(binding.drawerLayout.drawerContainer)
+        hideKeyboard()
+        Handler().postDelayed({
+            isMenuOpened = false
+            slideUp(binding.drawerLayout.drawerContainer)
+        }, 1000)
         binding.webview.loadUrl("https://dev.medic.co.il/?app")
     }
 
@@ -339,19 +354,20 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
     override fun onBackPressed() {
         if (binding.webview.canGoBack()) {
             binding.webview.goBack()
-        } else super.onBackPressed()
+        }
+        else super.onBackPressed()
     }
 
     private fun slideUp(view: View) {
         enableScroll()
         view.animate().translationY(-view.height.toFloat()).setDuration(500).start()
-        binding.toolbar.btnHome.setImageResource(R.drawable.ic_menu)
+        binding.toolbar.btnHome.setImageResource(R.drawable.new_menu)
     }
 
     private fun slideDown(view: View) {
         disableScroll()
         view.animate().translationY(0f).setDuration(500).start()
-        binding.toolbar.btnHome.setImageResource(R.drawable.ic_close_black_24dp)
+        binding.toolbar.btnHome.setImageResource(R.drawable.new_close)
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {

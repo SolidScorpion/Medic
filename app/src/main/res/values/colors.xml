@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="white">#ffffffff</color>
+    <color name="white_opacity_65">#a5ffffff</color>
     <color name="main_color">#4991F3</color>
+    <color name="main_color2">#4991F3</color>
     <color name="logo_color">#2f90fb</color>
 </resources>

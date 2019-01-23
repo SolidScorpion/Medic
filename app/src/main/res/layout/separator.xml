@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <View xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="match_parent"
-      android:background="@color/white"
-      android:layout_marginTop="@dimen/base_dimen"
-      android:layout_marginBottom="@dimen/base_dimen"
-    android:layout_marginStart="@dimen/base_dimen"
+    android:layout_width="match_parent"
+    android:layout_height="2dp"
+    android:layout_marginBottom="@dimen/base_dimen"
     android:layout_marginEnd="@dimen/base_dimen"
-      android:layout_height="2dp"/>
+    android:layout_marginStart="@dimen/base_dimen"
+    android:layout_marginTop="@dimen/base_dimen"
+    android:background="@color/white" />
