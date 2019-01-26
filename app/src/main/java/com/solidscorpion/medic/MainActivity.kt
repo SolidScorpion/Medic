@@ -224,12 +224,12 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 }, 1000)
             }
         }
-        if (results.isNotEmpty() && autocomplete.text.isNotEmpty()) {
+        isSearchIcon = if (results.isNotEmpty() && autocomplete.text.isNotEmpty()) {
             binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.new_close))
-            isSearchIcon = false
+            false
         } else {
             binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search_blue))
-            isSearchIcon = true
+            true
         }
     }
 
@@ -310,6 +310,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
             slideUp(binding.drawerLayout.drawerContainer)
         }, 1000)
         binding.webview.loadUrl("https://dev.medic.co.il/?app")
+        presenter.loadMenuItems()
     }
 
     override fun onStop() {
