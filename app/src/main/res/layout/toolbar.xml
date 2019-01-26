@@ -93,7 +93,7 @@
         android:dropDownAnchor="@+id/dropAnchor"
         android:textColor="@color/main_color"
         android:textColorHint="@color/main_color"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo" />
@@ -117,7 +117,7 @@
         android:src="@drawable/ic_search_blue"
         android:padding="0dp"
         android:adjustViewBounds="true"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/autocomplete"
         app:layout_constraintStart_toStartOf="@+id/autocomplete"
         app:layout_constraintTop_toTopOf="@+id/autocomplete" />
@@ -132,7 +132,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/autocomplete"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <!--<androidx.constraintlayout.widget.Group-->
     <!--android:id="@+id/group_search"-->

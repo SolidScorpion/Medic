@@ -33,7 +33,9 @@ import android.os.Handler
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
+import android.webkit.WebResourceResponse
 import android.widget.EditText
+import androidx.webkit.WebResourceErrorCompat
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -42,8 +44,8 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
     private lateinit var binding: ActivityMainBinding
 
-    private val FULL_TOOLBAR_HEIGHT_DP = 100
-    private val SMALL_TOOLBAR_HEIGHT_DP = 58
+    private val FULL_TOOLBAR_HEIGHT_DP = 101
+    private val SMALL_TOOLBAR_HEIGHT_DP = 50
 
     private lateinit var presenter: MainActivityContract.Presenter
     private var isMenuOpened = false
@@ -112,6 +114,14 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
             override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
                 handler?.proceed()
                 super.onReceivedSslError(view, handler, error)
+            }
+
+            override fun onReceivedHttpError(view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?) {
+                super.onReceivedHttpError(view, request, errorResponse)
+            }
+
+            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceErrorCompat?) {
+                super.onReceivedError(view, request, error)
             }
         }
         binding.toolbar.autocomplete.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
