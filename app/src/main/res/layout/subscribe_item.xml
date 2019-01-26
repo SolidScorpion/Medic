@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSubscribe"
@@ -28,7 +30,7 @@
         android:layout_marginTop="16dp"
         android:text="Already have an account? Login here"
         android:textColor="@color/gray"
-        android:fontFamily="@font/simple_text"
+        android:fontFamily="@font/sans_text"
         android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

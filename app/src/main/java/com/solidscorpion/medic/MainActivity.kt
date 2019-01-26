@@ -4,6 +4,7 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.net.http.SslError
 import android.os.Bundle
@@ -30,7 +31,9 @@ import kotlinx.android.synthetic.main.activity_main.view.*
 import android.os.Build
 import android.os.Handler
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -44,8 +47,23 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
     private lateinit var presenter: MainActivityContract.Presenter
     private var isMenuOpened = false
-    private var isSearchIcon = true
     private var toolbarOffset = 0
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            val v = currentFocus
+            if (v is EditText) {
+                val outRect = Rect()
+                v.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,6 +114,12 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 super.onReceivedSslError(view, handler, error)
             }
         }
+        binding.toolbar.autocomplete.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+            if (hasFocus)
+                binding.toolbar.autocomplete.hint = ""
+            else
+                binding.toolbar.autocomplete.hint = getString(R.string.search_israel_drug_index)
+        }
         binding.toolbar.autocomplete.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE && !TextUtils.isEmpty(v.text)) {
                 onSearchClicked()
@@ -120,37 +144,23 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val text = s?.toString() ?: ""
-                if (autocomplete.isPopupShowing) {
-                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.new_close))
-                    isSearchIcon = false
-                }
                 if (!text.isEmpty()) {
+                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.new_close))
                     presenter.performSearch(text, 0)
                 } else {
+                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search_blue))
                     if (binding.toolbar.autocomplete.adapter != null) {
                         (binding.toolbar.autocomplete.adapter as CustomArrayAdapter).clear()
-                        binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search_blue))
-                        isSearchIcon = true
                     }
                 }
             }
         })
-//        binding.toolbar.autocomplete.typeface = Typeface.createFromAsset(assets,
-//                "fonts/IBMPlexSans-Text.ttf")
-//        binding.toolbar.autocomplete.textSize = 17F
         binding.drawerLayout.menu.layoutManager = LinearLayoutManager(this)
         presenter.loadMenuItems()
         binding.toolbar.searchIcon.setOnClickListener {
             if (!TextUtils.isEmpty(binding.toolbar.autocomplete.text)) {
-                if (isSearchIcon) {
-                    onSearchClicked()
-                } else {
-                    binding.toolbar.autocomplete.dismissDropDown()
-                    (autocomplete.adapter as CustomArrayAdapter).clear()
-                    isSearchIcon = true
-                    binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search_blue))
-                }
-
+                (autocomplete.adapter as CustomArrayAdapter).clear()
+                binding.toolbar.autocomplete.setText("")
             }
         }
         binding.toolbar.imgBack.setOnClickListener { onBackPressed() }
@@ -223,13 +233,6 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                     slideUp(binding.drawerLayout.drawerContainer)
                 }, 1000)
             }
-        }
-        isSearchIcon = if (results.isNotEmpty() && autocomplete.text.isNotEmpty()) {
-            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.new_close))
-            false
-        } else {
-            binding.toolbar.searchIcon.setImageDrawable(getDrawable(R.drawable.ic_search_blue))
-            true
         }
     }
 
@@ -333,12 +336,12 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 },
                 onSignUpClick = {
                     binding.webview.loadUrl(
-                        StringBuilder()
-                            .append("https://dev.medic.co.il/subscribe")
-                            .append("/?app")
-                            .toString())
+                            StringBuilder()
+                                    .append("https://dev.medic.co.il/subscribe")
+                                    .append("/?app")
+                                    .toString())
                     slideUp(binding.drawerLayout.drawerContainer)
-        })
+                })
         binding.drawerLayout.menu.adapter = adapter
     }
 
@@ -355,8 +358,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
     override fun onBackPressed() {
         if (binding.webview.canGoBack()) {
             binding.webview.goBack()
-        }
-        else super.onBackPressed()
+        } else super.onBackPressed()
     }
 
     private fun slideUp(view: View) {
