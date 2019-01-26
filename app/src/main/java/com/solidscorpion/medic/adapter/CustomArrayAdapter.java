@@ -2,6 +2,7 @@ package com.solidscorpion.medic.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +78,15 @@ public class CustomArrayAdapter extends ArrayAdapter<String> implements Filterab
             case R.layout.item_title:
             case R.layout.autocomplete_item:
                 TextView title = (TextView) view.findViewById(R.id.title);
+                TextView tvDiscon = (TextView) view.findViewById(R.id.tvDiscon);
                 title.setText(item.getText());
+                if (item.isDiscontinued() != null && item.isDiscontinued() == 1){
+                    title.setPaintFlags(title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    tvDiscon.setVisibility(View.VISIBLE);
+                } else {
+                    title.setPaintFlags(0);
+                    tvDiscon.setVisibility(View.GONE);
+                }
                 break;
         }
         return view;
