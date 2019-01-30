@@ -7,6 +7,7 @@
     <color name="white_opacity_65">#a5ffffff</color>
     <color name="main_color">#4991F3</color>
     <color name="main_color2">#4991F3</color>
+    <color name="main_opacity">#404991f3</color>
     <color name="logo_color">#2f90fb</color>
     <color name="gray">#393939</color>
     <color name="black_opacity">#95000000</color>

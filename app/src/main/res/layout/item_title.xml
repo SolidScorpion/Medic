@@ -9,6 +9,7 @@
         android:id="@+id/tvDiscon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/sans_text"
         android:layout_gravity="end"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="0dp"
@@ -19,6 +20,7 @@
         android:textColor="@android:color/black" />
     <TextView
         android:id="@+id/title"
+        android:fontFamily="@font/sans_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
