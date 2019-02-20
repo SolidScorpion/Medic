@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Rect
-import android.graphics.Typeface
 import android.net.http.SslError
 import android.os.Bundle
 import android.text.Editable
@@ -14,9 +13,6 @@ import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.webkit.SslErrorHandler
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
 import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -30,14 +26,15 @@ import com.solidscorpion.medic.pojo.ModelMenuItem
 import kotlinx.android.synthetic.main.activity_main.view.*
 import android.os.Build
 import android.os.Handler
-import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
-import android.webkit.WebResourceResponse
+import android.webkit.*
 import android.widget.EditText
-import androidx.webkit.WebResourceErrorCompat
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.IOException
+import java.net.MalformedURLException
+import java.net.URL
 
 
 class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayout.OnOffsetChangedListener {
@@ -74,7 +71,8 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
         binding.appbar.addOnOffsetChangedListener(this)
         val application = (application as MedicApplication)
         presenter = MainActivityPresenter(this, application.api)
-        binding.webview.webViewClient = object : WebViewClientCompat() {
+        optimizeWebView()
+        binding.webview.webViewClient = object : WebViewClient() {
 
             override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
                 binding.pbLoading.visibility = View.VISIBLE
@@ -193,6 +191,25 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 slideDown(binding.drawerLayout.drawerContainer)
                 true
             }
+        }
+    }
+
+    private fun optimizeWebView() {
+        val settings = binding.webview.settings
+        settings.javaScriptEnabled = true
+        settings.loadWithOverviewMode = true
+        settings.useWideViewPort = true
+        settings.setSupportZoom(true)
+        settings.builtInZoomControls = false
+        settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.SINGLE_COLUMN
+        settings.cacheMode = WebSettings.LOAD_NO_CACHE
+        settings.domStorageEnabled = true
+        binding.webview.scrollBarStyle = WebView.SCROLLBARS_OUTSIDE_OVERLAY
+        binding.webview.isScrollbarFadingEnabled = true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            binding.webview.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        } else {
+            binding.webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         }
     }
 
