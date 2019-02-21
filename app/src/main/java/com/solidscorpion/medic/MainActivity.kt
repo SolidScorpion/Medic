@@ -17,7 +17,6 @@ import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.webkit.WebViewClientCompat
 import com.solidscorpion.medic.adapter.CustomArrayAdapter
 import com.solidscorpion.medic.adapter.RVAdapter
 import com.solidscorpion.medic.databinding.ActivityMainBinding
@@ -32,10 +31,6 @@ import android.webkit.*
 import android.widget.EditText
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.IOException
-import java.net.MalformedURLException
-import java.net.URL
-
 
 class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayout.OnOffsetChangedListener {
 
@@ -351,6 +346,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                                         .toString()
                         )
                         slideUp(binding.drawerLayout.drawerContainer)
+                        isMenuOpened = false
                     }
                 },
                 onSignUpClick = {
@@ -360,6 +356,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                                     .append("/?app")
                                     .toString())
                     slideUp(binding.drawerLayout.drawerContainer)
+                    isMenuOpened = false
                 })
         binding.drawerLayout.menu.adapter = adapter
     }
