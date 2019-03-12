@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
             override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
                 binding.pbLoading.visibility = View.VISIBLE
-                if (url != "https://dev.medic.co.il/?app") {
+                if (url != "https://medic.co.il/?app") {
                     binding.toolbar.btnShare.visibility = View.VISIBLE
                     binding.toolbar.imgBack.visibility = View.VISIBLE
                     setCustomToolbar(FULL_TOOLBAR_HEIGHT_DP)
@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
         binding.toolbar.btnShare.setOnClickListener { onShareClicked(binding.webview.url) }
         val settings = binding.webview.settings
         settings.javaScriptEnabled = true
-        binding.webview.loadUrl("https://dev.medic.co.il/?app")
+        binding.webview.loadUrl("https://medic.co.il/?app")
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
             title = ""
@@ -165,13 +165,13 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 if (imm.isAcceptingText) {
                     Handler().postDelayed({
-                        if (binding.webview.url == "https://dev.medic.co.il/?app") {
+                        if (binding.webview.url == "https://medic.co.il/?app") {
                             setCustomToolbar(SMALL_TOOLBAR_HEIGHT_DP)
                         }
                         slideUp(binding.drawerLayout.drawerContainer)
                     }, 1000)
                 } else {
-                    if (binding.webview.url == "https://dev.medic.co.il/?app") {
+                    if (binding.webview.url == "https://medic.co.il/?app") {
                         setCustomToolbar(SMALL_TOOLBAR_HEIGHT_DP)
                     }
                     slideUp(binding.drawerLayout.drawerContainer)
@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 false
             } else {
                 hideKeyboard()
-                if (binding.webview.url == "https://dev.medic.co.il/?app") {
+                if (binding.webview.url == "https://medic.co.il/?app") {
                     setCustomToolbar(FULL_TOOLBAR_HEIGHT_DP)
 
                 }
@@ -259,7 +259,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
     private fun loadEmptySearch() {
         slideUp(binding.drawerLayout.drawerContainer)
-        binding.webview.loadUrl("https://dev.medic.co.il/medic-search/${binding.toolbar.autocomplete.text}".plus("/?app"))
+        binding.webview.loadUrl("https://medic.co.il/medic-search/${binding.toolbar.autocomplete.text}".plus("/?app"))
     }
 
     private fun disableScroll() {
@@ -326,7 +326,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
             isMenuOpened = false
             slideUp(binding.drawerLayout.drawerContainer)
         }, 1000)
-        binding.webview.loadUrl("https://dev.medic.co.il/?app")
+        binding.webview.loadUrl("https://medic.co.il/?app")
         presenter.loadMenuItems()
     }
 
@@ -341,7 +341,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                     if (it.link.length > 1 || it.link == "/") {
                         binding.webview.loadUrl(
                                 StringBuilder()
-                                        .append("https://dev.medic.co.il")
+                                        .append("https://medic.co.il")
                                         .append(it.link)
                                         .toString()
                         )
@@ -352,7 +352,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 onSignUpClick = {
                     binding.webview.loadUrl(
                             StringBuilder()
-                                    .append("https://dev.medic.co.il/subscribe")
+                                    .append("https://medic.co.il/subscribe")
                                     .append("/?app")
                                     .toString())
                     slideUp(binding.drawerLayout.drawerContainer)

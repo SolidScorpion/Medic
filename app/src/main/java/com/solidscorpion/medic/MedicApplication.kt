@@ -41,7 +41,7 @@ class MedicApplication : Application() {
         builder.hostnameVerifier { _, _ -> true }
         builder.addNetworkInterceptor(StethoInterceptor())
         val build = Retrofit.Builder()
-            .baseUrl("https://dev.medic.co.il/")
+            .baseUrl("https://medic.co.il/")
             .client(builder.build())
             .addConverterFactory(MoshiConverterFactory.create(Moshi.Builder()
                 .add(KotlinJsonAdapterFactory()).build()))
