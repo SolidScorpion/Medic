@@ -12,7 +12,8 @@ import com.solidscorpion.medic.R
 import com.solidscorpion.medic.pojo.ModelMenuItem
 
 
-class RVAdapter(context: Context, val data: List<ModelMenuItem>, val onClick: (ModelMenuItem) -> Unit, val onSignUpClick: (String) -> Unit) :
+class RVAdapter(context: Context, val data: List<ModelMenuItem>, val onClick: (ModelMenuItem) -> Unit, val onSignUpClick: (String) -> Unit,
+                val onAccountClick: (String) -> Unit, val onSingOutClick: (String) -> Unit) :
     RecyclerView.Adapter<RVAdapter.ViewHolder>() {
 
     private val mInflater: LayoutInflater = LayoutInflater.from(context)
@@ -29,6 +30,8 @@ class RVAdapter(context: Context, val data: List<ModelMenuItem>, val onClick: (M
             it.btnSubscribe?.setOnClickListener { _ ->
                 onSignUpClick("")
             }
+            it.tvAccount?.setOnClickListener { _-> onAccountClick("") }
+            it.tvLogout?.setOnClickListener { _-> onSingOutClick("") }
         }
     }
 
@@ -37,6 +40,7 @@ class RVAdapter(context: Context, val data: List<ModelMenuItem>, val onClick: (M
             data[position].title.isEmpty() -> return R.layout.subscribe_item
             data[position].title.length == 1 -> return R.layout.separator
             data[position].title.length == 2 -> return R.layout.copyright_item
+            data[position].title.length == 3 -> return R.layout.item_logged
         }
         return R.layout.item
     }
@@ -62,6 +66,8 @@ class RVAdapter(context: Context, val data: List<ModelMenuItem>, val onClick: (M
             holder.myTextView?.typeface = Typeface.createFromAsset(holder.myTextView?.rootView?.context?.assets,
                     "fonts/IBMPlexSans-Text.ttf")
             holder.myTextView?.textSize = 12F
+        } else if (getItemViewType(position) == R.layout.item_logged) {
+            holder.tvUsername?.text = model.link
         }
     }
 
@@ -70,5 +76,8 @@ class RVAdapter(context: Context, val data: List<ModelMenuItem>, val onClick: (M
     inner class ViewHolder (itemView: View) : RecyclerView.ViewHolder(itemView) {
         val myTextView: TextView? = itemView.findViewById(R.id.tvTitle)
         val btnSubscribe: AppCompatButton? = itemView.findViewById(R.id.btnSubscribe)
+        val tvAccount: TextView? = itemView.findViewById(R.id.tvAccount)
+        val tvLogout: TextView? = itemView.findViewById(R.id.tvSignOut)
+        val tvUsername: TextView? = itemView.findViewById(R.id.tvUsername)
     }
 }

@@ -25,12 +25,17 @@ import com.solidscorpion.medic.pojo.ModelMenuItem
 import kotlinx.android.synthetic.main.activity_main.view.*
 import android.os.Build
 import android.os.Handler
+import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.webkit.*
 import android.widget.EditText
 import com.google.android.material.appbar.AppBarLayout
+import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONObject
+import java.io.InputStreamReader
+import java.net.URL
 
 class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayout.OnOffsetChangedListener {
 
@@ -39,6 +44,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
     private val FULL_TOOLBAR_HEIGHT_DP = 101
     private val SMALL_TOOLBAR_HEIGHT_DP = 50
 
+    private var loggedUser = false
     private lateinit var presenter: MainActivityContract.Presenter
     private var isMenuOpened = false
     private var toolbarOffset = 0
@@ -88,18 +94,36 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 super.onPageFinished(view, url)
             }
 
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                val aURL = URL(url.toString())
+                return super.shouldOverrideUrlLoading(view, url)
+            }
+
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 if (!request.hasGesture()) return false
+                if (request.url.toString().contains("/jwt-auth/v1/token")) {
+                    val aURL = URL(request.url.toString())
+                    val conn = aURL.openConnection()
+                    conn.connect()
+                    val input = conn.getInputStream()
+                    val jsonParser = JsonParser()
+                    val jsonObject = jsonParser.parse(InputStreamReader(input, "UTF-8"))
+                    val s = jsonObject.toString()
+                }
                 if (!request.url.toString().contains("?")) {
-                    binding.webview.loadUrl(StringBuilder()
+                    binding.webview.loadUrl(
+                        StringBuilder()
                             .append(request.url)
                             .append("?app")
-                            .toString())
+                            .toString()
+                    )
                 } else {
-                    binding.webview.loadUrl(StringBuilder()
+                    binding.webview.loadUrl(
+                        StringBuilder()
                             .append(request.url)
                             .append("&app")
-                            .toString())
+                            .toString()
+                    )
                 }
                 return true
             }
@@ -108,6 +132,16 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 handler?.proceed()
                 super.onReceivedSslError(view, handler, error)
             }
+
+            override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+                if (request?.url.toString().equals("https://medic.co.il/wp-json/medic/v1/page")) {
+                    Log.d("", "request.getRequestHeaders()::" + request?.requestHeaders)
+                    val token = request?.requestHeaders?.get("Authorization")
+                    if (token != null && token.isNotEmpty()) (presenter as MainActivityPresenter).validateToken(token)
+                }
+                return super.shouldInterceptRequest(view, request)
+            }
+
         }
         binding.toolbar.autocomplete.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
             if (hasFocus)
@@ -125,6 +159,8 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
         binding.toolbar.btnShare.setOnClickListener { onShareClicked(binding.webview.url) }
         val settings = binding.webview.settings
         settings.javaScriptEnabled = true
+        settings.setDomStorageEnabled(true)
+        settings.databaseEnabled = true
         binding.webview.loadUrl("https://medic.co.il/?app")
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
@@ -151,7 +187,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
             }
         })
         binding.drawerLayout.menu.layoutManager = LinearLayoutManager(this)
-        presenter.loadMenuItems()
+
         binding.toolbar.searchIcon.setOnClickListener {
             if (!TextUtils.isEmpty(binding.toolbar.autocomplete.text)) {
                 (autocomplete.adapter as CustomArrayAdapter).clear()
@@ -159,6 +195,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
             }
         }
         binding.toolbar.imgBack.setOnClickListener { onBackPressed() }
+        binding.btnUser.setOnClickListener { onUserIconClicked() }
         binding.toolbar.btnHome.setOnClickListener {
             isMenuOpened = if (isMenuOpened) {
                 hideKeyboard()
@@ -252,9 +289,11 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
     private fun hideKeyboard() {
         val input = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        input.hideSoftInputFromWindow(autocomplete
+        input.hideSoftInputFromWindow(
+            autocomplete
                 .applicationWindowToken,
-                InputMethodManager.HIDE_NOT_ALWAYS)
+            InputMethodManager.HIDE_NOT_ALWAYS
+        )
     }
 
     private fun loadEmptySearch() {
@@ -270,7 +309,8 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
     private fun enableScroll() {
         val params = toolbar.layoutParams as AppBarLayout.LayoutParams
-        params.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
+        params.scrollFlags =
+            AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
         appbar.requestLayout()
     }
 
@@ -327,7 +367,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
             slideUp(binding.drawerLayout.drawerContainer)
         }, 1000)
         binding.webview.loadUrl("https://medic.co.il/?app")
-        presenter.loadMenuItems()
+        presenter.loadMenuItems(loggedUser)
     }
 
     override fun onStop() {
@@ -337,27 +377,46 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
     override fun onMenuItemsLoaded(items: List<ModelMenuItem>) {
         val adapter = RVAdapter(this, items,
-                onClick = {
-                    if (it.link.length > 1 || it.link == "/") {
-                        binding.webview.loadUrl(
-                                StringBuilder()
-                                        .append("https://medic.co.il")
-                                        .append(it.link)
-                                        .toString()
-                        )
-                        slideUp(binding.drawerLayout.drawerContainer)
-                        isMenuOpened = false
-                    }
-                },
-                onSignUpClick = {
+            onClick = {
+                if (it.link.length > 1 || it.link == "/") {
                     binding.webview.loadUrl(
-                            StringBuilder()
-                                    .append("https://medic.co.il/subscribe")
-                                    .append("/?app")
-                                    .toString())
+                        StringBuilder()
+                            .append("https://medic.co.il")
+                            .append(it.link)
+                            .toString()
+                    )
                     slideUp(binding.drawerLayout.drawerContainer)
                     isMenuOpened = false
-                })
+                }
+            },
+            onSignUpClick = {
+                binding.webview.loadUrl(
+                    StringBuilder()
+                        .append("https://medic.co.il/subscribe")
+                        .append("/?app")
+                        .toString()
+                )
+                slideUp(binding.drawerLayout.drawerContainer)
+                isMenuOpened = false
+            },
+            onAccountClick = {
+                binding.webview.loadUrl(
+                    StringBuilder()
+                        .append("https://medic.co.il/my-account")
+                        .append("/?app")
+                        .toString()
+                )
+                slideUp(binding.drawerLayout.drawerContainer)
+                isMenuOpened = false
+            },
+            onSingOutClick = {
+                loggedUser = false
+                logoutUser()
+                binding.btnUser.setImageDrawable(getDrawable(R.drawable.ic_user))
+                presenter.loadMenuItems(loggedUser)
+                slideUp(binding.drawerLayout.drawerContainer)
+                isMenuOpened = false
+            })
         binding.drawerLayout.menu.adapter = adapter
     }
 
@@ -387,6 +446,20 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
         disableScroll()
         view.animate().translationY(0f).setDuration(500).start()
         binding.toolbar.btnHome.setImageResource(R.drawable.new_close)
+    }
+
+    private fun onUserIconClicked() {
+        if (!loggedUser) binding.webview.loadUrl("javascript:loginPopup.open()")
+    }
+
+    private fun logoutUser() {
+        binding.webview.loadUrl("javascript:loginPopup.signOut()")
+    }
+
+    override fun userLogged() {
+        loggedUser = true
+        binding.btnUser.setImageDrawable(getDrawable(R.drawable.ic_user_logged))
+        presenter.loadMenuItems(true)
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {

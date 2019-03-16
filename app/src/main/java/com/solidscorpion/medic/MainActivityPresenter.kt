@@ -14,42 +14,47 @@ import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
 class MainActivityPresenter(
-        private val view: MainActivityContract.View,
-        private val api: Api
+    private val view: MainActivityContract.View,
+    private val api: Api
 ) :
-        MainActivityContract.Presenter {
+    MainActivityContract.Presenter {
     private val TAG = MainActivityPresenter::class.java.simpleName
     private val disposables = CompositeDisposable()
+    private var username: String = ""
     @SuppressLint("CheckResult")
-    override fun loadMenuItems() {
+    override fun loadMenuItems(logged: Boolean) {
         Single.zip(api.getMenuItems().subscribeOn(Schedulers.io()),
-                api.getFooterMenuItems().subscribeOn(Schedulers.io()),
-                BiFunction<List<ModelMenuItem>, List<ModelMenuItem>, List<ModelMenuItem>> { t1, t2 ->
+            api.getFooterMenuItems().subscribeOn(Schedulers.io()),
+            BiFunction<List<ModelMenuItem>, List<ModelMenuItem>, List<ModelMenuItem>> { t1, t2 ->
+                var font = ModelMenuItem.HEADER_FONT
+                val separator = ModelMenuItem("1", "", font)
+                val mutableListOf = mutableListOf<ModelMenuItem>()
+                if (logged) {
+                    mutableListOf.add(ModelMenuItem("000", username, font))
+                } else {
+                    mutableListOf.add(ModelMenuItem("", "", font))
 
-                    var font = ModelMenuItem.HEADER_FONT
-                    val separator = ModelMenuItem("1", "", font)
-                    val mutableListOf = mutableListOf<ModelMenuItem>()
-                    mutableListOf.add(ModelMenuItem("","", font))
-                    mutableListOf.add(separator)
-                    for (model in t1) model.font = font
-                    mutableListOf.addAll(t1)
+                }
+                mutableListOf.add(separator)
+                for (model in t1) model.font = font
+                mutableListOf.addAll(t1)
 
-                    font = ModelMenuItem.BOTTOM_FONT
-                    val footerSeparator = ModelMenuItem("2", "", font)
-                    mutableListOf.add(footerSeparator)
-                    for (model in t2) model.font = font
-                    mutableListOf.addAll(t2)
-                    mutableListOf.add(ModelMenuItem("3", "", font))
+                font = ModelMenuItem.BOTTOM_FONT
+                val footerSeparator = ModelMenuItem("2", "", font)
+                mutableListOf.add(footerSeparator)
+                for (model in t2) model.font = font
+                mutableListOf.addAll(t2)
+                mutableListOf.add(ModelMenuItem("3", "", font))
 
-                    font = ModelMenuItem.COPYRIGHT_FONT
-                    mutableListOf.add(ModelMenuItem("11", "", font))
-                    mutableListOf
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { items ->
-                            view.onMenuItemsLoaded(items)
-                        }, {
+                font = ModelMenuItem.COPYRIGHT_FONT
+                mutableListOf.add(ModelMenuItem("11", "", font))
+                mutableListOf
+            })
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { items ->
+                    view.onMenuItemsLoaded(items)
+                }, {
                     Log.e(TAG, it.message)
                     it.printStackTrace()
                 })
@@ -62,20 +67,20 @@ class MainActivityPresenter(
     override fun performSearch(text: CharSequence, delay: Long) {
         disposables.clear()
         disposables.add(
-                Single.timer(delay, TimeUnit.SECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .map { view.showProgress() }
-                        .flatMap { api.performSearch(text.toString()).subscribeOn(Schedulers.io()) }
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            val results = parseResults(it.searchResults)
-                            view.showResults(results)
-                            view.hideProgress()
-                        }, {
-                            view.hideProgress()
-                            Log.e(TAG, it.message)
-                            it.printStackTrace()
-                        })
+            Single.timer(delay, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { view.showProgress() }
+                .flatMap { api.performSearch(text.toString()).subscribeOn(Schedulers.io()) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    val results = parseResults(it.searchResults)
+                    view.showResults(results)
+                    view.hideProgress()
+                }, {
+                    view.hideProgress()
+                    Log.e(TAG, it.message)
+                    it.printStackTrace()
+                })
         )
     }
 
@@ -89,5 +94,34 @@ class MainActivityPresenter(
             }
         }
         return parsedResult
+    }
+
+    fun validateToken(token: String) {
+        disposables.add(api.validateToken(token)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                if (it.data.status == 200) {
+                    getUser(token)
+                }
+            }, {
+                Log.e(TAG, it.message)
+                it.printStackTrace()
+            })
+        )
+    }
+
+    fun getUser(token: String) {
+        disposables.add(api.userInfo(token)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                username = it.data.user_login
+                view.userLogged()
+            }, {
+                Log.e(TAG, it.message)
+                it.printStackTrace()
+            })
+        )
     }
 }

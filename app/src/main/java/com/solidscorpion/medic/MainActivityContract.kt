@@ -1,5 +1,6 @@
 package com.solidscorpion.medic
 
+import android.annotation.SuppressLint
 import com.solidscorpion.medic.pojo.BaseItem
 import com.solidscorpion.medic.pojo.ModelMenuItem
 
@@ -10,11 +11,12 @@ interface MainActivityContract {
         fun showProgress()
         fun hideProgress()
         fun showResults(results: List<BaseItem>)
+        fun userLogged()
     }
 
     interface Presenter {
-        fun loadMenuItems()
         fun performSearch(text: CharSequence, delay: Long)
         fun onStop()
+        fun loadMenuItems(logged: Boolean)
     }
 }
