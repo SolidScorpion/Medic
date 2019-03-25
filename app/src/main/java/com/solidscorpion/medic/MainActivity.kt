@@ -218,7 +218,6 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 hideKeyboard()
                 if (binding.webview.url == "https://medic.co.il/?app") {
                     setCustomToolbar(FULL_TOOLBAR_HEIGHT_DP)
-
                 }
                 slideDown(binding.drawerLayout.drawerContainer)
                 true
@@ -456,9 +455,10 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
         binding.webview.loadUrl("javascript:loginPopup.signOut()")
     }
 
-    override fun userLogged() {
+    override fun userLogged()  {
         loggedUser = true
-        binding.btnUser.setImageDrawable(getDrawable(R.drawable.ic_user_logged))
+//        binding.btnUser.setImageDrawable(getDrawable(R.drawable.ic_user_logged))
+        binding.btnUser.visibility = View.GONE
         presenter.loadMenuItems(true)
     }
 
