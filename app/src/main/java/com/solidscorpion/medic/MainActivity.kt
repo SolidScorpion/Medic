@@ -30,6 +30,7 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.webkit.*
 import android.widget.EditText
+import android.widget.Toast
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_main.*
@@ -72,6 +73,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
         binding.appbar.addOnOffsetChangedListener(this)
         val application = (application as MedicApplication)
         presenter = MainActivityPresenter(this, application.api)
+        presenter.loadMenuItems(loggedUser)
         optimizeWebView()
         binding.webview.webViewClient = object : WebViewClient() {
 
@@ -135,7 +137,6 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
             override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
                 if (request?.url.toString().equals("https://medic.co.il/wp-json/medic/v1/page")) {
-                    Log.d("", "request.getRequestHeaders()::" + request?.requestHeaders)
                     val token = request?.requestHeaders?.get("Authorization")
                     if (token != null && token.isNotEmpty()) (presenter as MainActivityPresenter).validateToken(token)
                 }
@@ -449,7 +450,10 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
     }
 
     private fun onUserIconClicked() {
-        if (!loggedUser) binding.webview.loadUrl("javascript:loginPopup.open()")
+        if (!loggedUser) {
+            Toast.makeText(this, "loginPopup.open() TRIGGERED", Toast.LENGTH_SHORT).show()
+            binding.webview.loadUrl("javascript:loginPopup.open()")
+        }
     }
 
     private fun logoutUser() {
