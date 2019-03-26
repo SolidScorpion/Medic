@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
             override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
                 binding.pbLoading.visibility = View.VISIBLE
-                if (url != "https://medic.co.il/?app") {
+                if (!url.contains("https://medic.co.il/?app")) {
                     binding.toolbar.btnShare.visibility = View.VISIBLE
                     binding.toolbar.imgBack.visibility = View.VISIBLE
                     setCustomToolbar(FULL_TOOLBAR_HEIGHT_DP)
@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                             .append("?app")
                             .toString()
                     )
-                } else {
+                } else if (request.url.toString().contains("?app") && !request.url.toString().contains("&app")) {
                     binding.webview.loadUrl(
                         StringBuilder()
                             .append(request.url)
@@ -217,7 +217,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 false
             } else {
                 hideKeyboard()
-                if (binding.webview.url == "https://medic.co.il/?app") {
+                if (binding.webview.url.contains("https://medic.co.il/?app")) {
                     setCustomToolbar(FULL_TOOLBAR_HEIGHT_DP)
                 }
                 slideDown(binding.drawerLayout.drawerContainer)
@@ -450,13 +450,13 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
 
     private fun onUserIconClicked() {
         if (!loggedUser) {
-            Toast.makeText(this, "loginPopup.open() TRIGGERED", Toast.LENGTH_SHORT).show()
             binding.webview.loadUrl("javascript:loginPopup.open()")
         }
     }
 
     private fun logoutUser() {
         binding.webview.loadUrl("javascript:loginPopup.signOut()")
+        binding.btnUser.visibility = View.VISIBLE
     }
 
     override fun userLogged()  {

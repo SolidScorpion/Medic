@@ -98,6 +98,7 @@
                             android:adjustViewBounds="true"
                             android:onClick="openMain"
                             android:src="@drawable/ic_back"
+                            android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="@+id/logo"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/logo" />
