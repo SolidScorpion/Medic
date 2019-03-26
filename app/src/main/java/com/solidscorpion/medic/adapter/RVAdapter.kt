@@ -13,7 +13,7 @@ import com.solidscorpion.medic.pojo.ModelMenuItem
 
 
 class RVAdapter(context: Context, val data: List<ModelMenuItem>, val onClick: (ModelMenuItem) -> Unit, val onSignUpClick: (String) -> Unit,
-                val onAccountClick: (String) -> Unit, val onSingOutClick: (String) -> Unit) :
+                val onAccountClick: (String) -> Unit, val onSingOutClick: (String) -> Unit, val onLoginClick: (String) -> Unit) :
     RecyclerView.Adapter<RVAdapter.ViewHolder>() {
 
     private val mInflater: LayoutInflater = LayoutInflater.from(context)
@@ -30,6 +30,7 @@ class RVAdapter(context: Context, val data: List<ModelMenuItem>, val onClick: (M
             it.btnSubscribe?.setOnClickListener { _ ->
                 onSignUpClick("")
             }
+            it.tvClickLogin?.setOnClickListener { onLoginClick("") }
             it.tvAccount?.setOnClickListener { _-> onAccountClick("") }
             it.tvLogout?.setOnClickListener { _-> onSingOutClick("") }
         }
@@ -79,5 +80,6 @@ class RVAdapter(context: Context, val data: List<ModelMenuItem>, val onClick: (M
         val tvAccount: TextView? = itemView.findViewById(R.id.tvAccount)
         val tvLogout: TextView? = itemView.findViewById(R.id.tvSignOut)
         val tvUsername: TextView? = itemView.findViewById(R.id.tvUsername)
+        val tvClickLogin: TextView? = itemView.findViewById(R.id.tvClick)
     }
 }

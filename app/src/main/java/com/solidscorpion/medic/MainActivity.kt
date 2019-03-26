@@ -416,6 +416,13 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 presenter.loadMenuItems(loggedUser)
                 slideUp(binding.drawerLayout.drawerContainer)
                 isMenuOpened = false
+            },
+            onLoginClick = {
+                if (!loggedUser) {
+                    binding.webview.loadUrl("javascript:loginPopup.open()")
+                    slideUp(binding.drawerLayout.drawerContainer)
+                    isMenuOpened = false
+                }
             })
         binding.drawerLayout.menu.adapter = adapter
     }
