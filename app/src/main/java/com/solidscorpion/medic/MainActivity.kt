@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Rect
+import android.net.Uri
 import android.net.http.SslError
 import android.os.Bundle
 import android.text.Editable
@@ -31,6 +32,7 @@ import android.view.inputmethod.InputMethodManager
 import android.webkit.*
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_main.*
@@ -112,7 +114,15 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                     val jsonObject = jsonParser.parse(InputStreamReader(input, "UTF-8"))
                     val s = jsonObject.toString()
                 }
-                if (!request.url.toString().contains("?")) {
+                if (request.url.toString().contains("/checkout")){
+                    openUrlinBrowser(request.url.toString())
+                    return true
+                }
+                else if (request.url.toString().contains("/lost-password")){
+                    openUrlinBrowser("https://medic.co.il/lost-pass/")
+                    return true
+                }
+                else if (!request.url.toString().contains("?")) {
                     binding.webview.loadUrl(
                         StringBuilder()
                             .append(request.url)
@@ -294,6 +304,12 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 .applicationWindowToken,
             InputMethodManager.HIDE_NOT_ALWAYS
         )
+    }
+
+    private fun openUrlinBrowser(url: String) {
+        val i = Intent(Intent.ACTION_VIEW)
+        i.data = Uri.parse(url)
+        startActivity(i)
     }
 
     private fun loadEmptySearch() {
