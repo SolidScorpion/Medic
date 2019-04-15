@@ -1,52 +1,45 @@
 {
   "project_info": {
-    "project_number": "1093432682131",
-    "firebase_url": "https://medic-640be.firebaseio.com",
-    "project_id": "medic-640be",
-    "storage_bucket": "medic-640be.appspot.com"
+    "project_number": "608438814353",
+    "firebase_url": "https://medic-dc1bb.firebaseio.com",
+    "project_id": "medic-dc1bb",
+    "storage_bucket": "medic-dc1bb.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1093432682131:android:661797e52c52b4bf",
+        "mobilesdk_app_id": "1:608438814353:android:661797e52c52b4bf",
         "android_client_info": {
           "package_name": "com.solidscorpion.medic"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1093432682131-9s2gg1shm1uu1s7utaov5ol2mbe3dnth.apps.googleusercontent.com",
+          "client_id": "608438814353-iksrpin268qcfo18p4gds9bm1doqfhed.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.solidscorpion.medic",
-            "certificate_hash": "b1b299b986e1a84ae1799bb2319a15c3d3fb2501"
+            "certificate_hash": "96d5bfe773d225d6170696479a579ccf2698d14f"
           }
         },
         {
-          "client_id": "1093432682131-vourqrgf6q2mkehs1bvn01j4g4i9k9ds.apps.googleusercontent.com",
+          "client_id": "608438814353-rne4d0fmaorsjqqrrif5e7pi53mrrufu.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA_IgsSpT398vSgKDH0BT31-bp2pXsZzlw"
+          "current_key": "AIzaSyA_08UySeMos0_2wQagKGOVemX-nXTjrcM"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "1093432682131-vourqrgf6q2mkehs1bvn01j4g4i9k9ds.apps.googleusercontent.com",
+              "client_id": "608438814353-rne4d0fmaorsjqqrrif5e7pi53mrrufu.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }
