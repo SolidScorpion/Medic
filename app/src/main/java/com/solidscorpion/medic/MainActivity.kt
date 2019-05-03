@@ -172,7 +172,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
         settings.javaScriptEnabled = true
         settings.setDomStorageEnabled(true)
         settings.databaseEnabled = true
-        binding.webview.loadUrl("https://medic.co.il/?app")
+
         setSupportActionBar(binding.toolbar)
         supportActionBar?.apply {
             title = ""
@@ -233,6 +233,32 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 slideDown(binding.drawerLayout.drawerContainer)
                 true
             }
+        }
+
+        if (intent != null) {
+            if (intent.extras != null) {
+                val url = StringBuilder().append(intent.extras!!.getString("URL")).append("/?app").toString()
+                webview.loadUrl(url)
+            } else {
+                binding.webview.loadUrl("https://medic.co.il/?app")
+            }
+        } else {
+            binding.webview.loadUrl("https://medic.co.il/?app")
+        }
+
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent != null) {
+            if (intent.extras != null) {
+                val url = StringBuilder().append(intent.extras!!.getString("URL")).append("/?app").toString()
+                webview.loadUrl(url)
+            } else {
+                binding.webview.loadUrl("https://medic.co.il/?app")
+            }
+        } else {
+            binding.webview.loadUrl("https://medic.co.il/?app")
         }
     }
 
