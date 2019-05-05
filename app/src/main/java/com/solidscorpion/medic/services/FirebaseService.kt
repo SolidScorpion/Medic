@@ -29,8 +29,8 @@ class FirebaseService : FirebaseMessagingService() {
             val obj = JSONObject(params)
 
             val customObj = JSONObject(obj.getString("u"))
-            val url = customObj["url"]
-            val message = obj["title"].toString()
+            val url = customObj["link"]
+            val message = customObj["content"].toString()
             Log.e("JSON OBJECT", url.toString())
             sendNotification(url.toString(), message)
         }
