@@ -2,6 +2,7 @@
     <string name="app_name">Medic</string>
     <string name="search_israel_drug_index">Search the Israeli drug Index</string>
     <string name="fcm_sender_id">608438814353</string>
+    <!--<string name="push_proj_id">C20F8-F671</string>-->
     <string name="view_all">View all</string>
     <string name="copyright_169_medic_publications_ltd">Copyright © Medic Publications LTD</string>
 </resources>
