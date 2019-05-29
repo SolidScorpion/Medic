@@ -7,36 +7,32 @@ import android.graphics.Bitmap
 import android.graphics.Rect
 import android.net.Uri
 import android.net.http.SslError
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.webkit.*
 import android.widget.AdapterView
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.appbar.AppBarLayout
+import com.google.gson.JsonParser
 import com.solidscorpion.medic.adapter.CustomArrayAdapter
 import com.solidscorpion.medic.adapter.RVAdapter
 import com.solidscorpion.medic.databinding.ActivityMainBinding
 import com.solidscorpion.medic.pojo.BaseItem
 import com.solidscorpion.medic.pojo.ModelMenuItem
-import kotlinx.android.synthetic.main.activity_main.view.*
-import android.os.Build
-import android.os.Handler
-import android.util.Log
-import android.view.MotionEvent
-import android.view.inputmethod.InputMethodManager
-import android.webkit.*
-import android.widget.EditText
-import android.widget.Toast
-import androidx.core.content.ContextCompat
-import com.google.android.material.appbar.AppBarLayout
-import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONObject
+import kotlinx.android.synthetic.main.activity_main.view.*
 import java.io.InputStreamReader
 import java.net.URL
 
@@ -120,6 +116,10 @@ class MainActivity : AppCompatActivity(), MainActivityContract.View, AppBarLayou
                 }
                 else if (request.url.toString().contains("/lost-password")){
                     openUrlinBrowser("https://medic.co.il/lost-pass/")
+                    return true
+                }
+                else if (request.url.toString().contains("/my-account")){
+                    openUrlinBrowser("https://medic.co.il/my-account/")
                     return true
                 }
                 else if (!request.url.toString().contains("?")) {
